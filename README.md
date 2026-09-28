@@ -69,3 +69,27 @@ Las plantillas de `training-plans.js` especifican sesiones y series reales. No s
 Al abrir datos de la versión anterior, el plan original sin personalizar se adapta al objetivo que ya estuviera elegido (1–6). Si estaba personalizado, se mantiene y la app avisa cuando distribución y objetivo no coinciden. Aplicar un plan por días guarda cualquier rutina personalizada en **Planes anteriores** (hasta 20 copias sin duplicados), desde donde puede recuperarse. No se borran pesos, notas, récords ni la sesión activa. Las copias se incluyen al exportar/importar. Las identidades de los ejercicios se mantienen para que sus marcas sigan disponibles al cambiar la distribución.
 
 Validación: `tests/app.test.cjs` comprueba los flujos del registro y `tests/frequency.test.cjs` los cambios reales de frecuencia, su vista previa, la migración y la conservación de datos. Ambos usan Node y `linkedom` como dependencia de pruebas; la app publicada no necesita dependencias.
+
+## Primera visita y Perfil
+
+La versión 5 añade un asistente de cuatro pasos: objetivo, datos personales y experiencia, disponibilidad/material y propuesta de rutina. En instalaciones nuevas se abre automáticamente; puede posponerse. Las instalaciones existentes reciben un acceso a **Completar perfil**, sin interrumpir la sesión activa. **Perfil** es la quinta pestaña y permite revisar o cambiar las respuestas.
+
+El nombre, la altura y el peso son opcionales. La edad sirve para limitar estas propuestas generales a adultos (18–100 años). La altura y el peso se guardan como referencia, sin calcular cargas, calorías ni diagnósticos. Todo se almacena en el mismo navegador y se incluye en las copias JSON; no hay cuentas, IA ni transmisión del perfil a un servidor.
+
+`profile-engine.js` adapta las plantillas reales de 1–6 días:
+
+- **Objetivo:** fuerza cambia repeticiones y descansos de los principales; músculo prioriza series; estar en forma limita el volumen; perder grasa mantiene fuerza y propone 8 minutos opcionales de actividad suave. La app no promete pérdida de peso ni registra ese cardio como series de fuerza.
+- **Experiencia:** empezar o volver limita las series iniciales; el usuario puede ajustar la rutina o actualizar su nivel más adelante. No se aumenta el volumen automáticamente por el mero paso del tiempo.
+- **Tiempo:** se estiman calentamiento, transiciones, series, descansos y actividad adicional. Si hace falta, se reducen series sin acortar automáticamente los descansos. Es una estimación, no una garantía de duración.
+- **Material:** máquinas, poleas, mancuernas, barras/discos y bancos. Las sustituciones se buscan en un catálogo cerrado. La vista previa detalla los cambios y omisiones; si faltan patrones básicos o una sesión queda vacía, impide aplicar la propuesta y pide revisar las opciones. Elegir material limitado dentro del gimnasio no cambia el enfoque de la app a entrenamiento en casa.
+- **Exclusiones:** los ejercicios marcados se excluyen de las propuestas y del catálogo filtrado. Son preferencias concretas, no una evaluación de lesiones. Una máquina ocupada se gestiona con el cambio temporal de ejercicio durante la sesión.
+
+Se incorporan 14 alternativas con instrucciones escritas. Se mantienen las 17 guías visuales existentes; las variantes nuevas sin una ilustración correspondiente se muestran sin guía, evitando atribuirles una imagen diferente.
+
+La vista previa no escribe datos. **Guardar perfil y empezar / Aplicar nueva rutina** actualiza el plan futuro y el objetivo semanal de forma conjunta, archivando el plan personalizado anterior. Conserva registros, notas, sesión activa y temporizador. En instalaciones existentes, **Guardar solo el perfil** mantiene la rutina y muestra que las nuevas preferencias están pendientes de aplicar. **Días y rutina** también utiliza el perfil, para no perder sus ajustes al cambiar la frecuencia. Recuperar un plan anterior conserva el perfil personal y recupera la rutina elegida con su contexto de generación.
+
+Las reglas concretas son decisiones de la app, no una prescripción individual ni un plan oficial de ACSM. Referencia general: [actualización de entrenamiento de fuerza de ACSM, marzo de 2026](https://acsm.org/resistance-training-guidelines-update-2026/). La carga se elige según técnica y esfuerzo percibido; las cifras corporales no determinan los kilos que levantar.
+
+Pruebas de esta versión: `tests/profile.test.cjs` recorre el asistente y verifica efectos reales, cambios de días, exclusiones, guardado parcial, conservación de datos, importación y errores de almacenamiento, además de 1.080 combinaciones de preferencias. Las pruebas del registro y de frecuencia siguen vigentes. Son pruebas de lógica e interacción DOM; no sustituyen la revisión en un iPhone real.
+
+Para actualizar GitHub Pages, extrae `mi-gym-github.zip` y reemplaza los archivos del mismo repositorio y carpeta donde está publicada la app. El ZIP contiene los archivos públicos en la raíz, sin una carpeta `dist` adicional. Mantén la misma URL para conservar el acceso al almacenamiento local de esa instalación. Después cierra y vuelve a abrir la app para activar los recursos sin conexión de esta versión.
