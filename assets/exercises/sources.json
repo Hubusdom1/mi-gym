@@ -1,0 +1,976 @@
+[
+  {
+    "id": "exercise-machine-chest-press",
+    "slug": "machine-chest-press",
+    "name": "Machine Chest Press",
+    "exerciseType": "weight_reps",
+    "equipment": "Machine",
+    "primaryMuscle": "Chest",
+    "secondaryMuscles": [
+      "Triceps",
+      "Shoulders"
+    ],
+    "isStretch": false,
+    "frames": [
+      {
+        "index": 1,
+        "path": "assets/machine-chest-press/frame-1.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": {
+            "name": "Everkinetic",
+            "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0066-tension.svg",
+            "license": "CC BY-SA 4.0",
+            "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+            "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+          }
+        },
+        "local_path": "assets/exercises/machine-chest-press-1.svg"
+      },
+      {
+        "index": 2,
+        "path": "assets/machine-chest-press/frame-2.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/machine-chest-press-2.svg"
+      }
+    ],
+    "attribution": {
+      "creator": "Bryl Lim",
+      "creatorUrl": "https://bryllim.com",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source": {
+        "name": "Everkinetic",
+        "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0066-tension.svg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+      }
+    },
+    "miGymChanges": "Recolored monochrome paths from white to navy (#263747); no pose geometry changed."
+  },
+  {
+    "id": "exercise-lat-pulldown",
+    "slug": "lat-pulldown",
+    "name": "Lat Pulldown",
+    "exerciseType": "weight_reps",
+    "equipment": "Cable",
+    "primaryMuscle": "Lats",
+    "secondaryMuscles": [
+      "Biceps"
+    ],
+    "isStretch": false,
+    "frames": [
+      {
+        "index": 1,
+        "path": "assets/lat-pulldown/frame-1.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": {
+            "name": "Everkinetic",
+            "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0093-tension.svg",
+            "license": "CC BY-SA 4.0",
+            "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+            "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+          }
+        },
+        "local_path": "assets/exercises/lat-pulldown-1.svg"
+      }
+    ],
+    "attribution": {
+      "creator": "Bryl Lim",
+      "creatorUrl": "https://bryllim.com",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source": {
+        "name": "Everkinetic",
+        "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0093-tension.svg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+      }
+    },
+    "miGymChanges": "Recolored monochrome paths from white to navy (#263747); no pose geometry changed."
+  },
+  {
+    "id": "exercise-seated-row",
+    "slug": "seated-row",
+    "name": "Seated Cable Row",
+    "exerciseType": "weight_reps",
+    "equipment": "Cable",
+    "primaryMuscle": "Back",
+    "secondaryMuscles": [
+      "Biceps",
+      "Rear Delts"
+    ],
+    "isStretch": false,
+    "frames": [
+      {
+        "index": 1,
+        "path": "assets/seated-row/frame-1.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": {
+            "name": "Everkinetic",
+            "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0025-tension.svg",
+            "license": "CC BY-SA 4.0",
+            "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+            "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+          }
+        },
+        "local_path": "assets/exercises/seated-row-1.svg"
+      },
+      {
+        "index": 2,
+        "path": "assets/seated-row/frame-2.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/seated-row-2.svg"
+      }
+    ],
+    "attribution": {
+      "creator": "Bryl Lim",
+      "creatorUrl": "https://bryllim.com",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source": {
+        "name": "Everkinetic",
+        "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0025-tension.svg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+      }
+    },
+    "miGymChanges": "Recolored monochrome paths from white to navy (#263747); no pose geometry changed."
+  },
+  {
+    "id": "exercise-lateral-raise",
+    "slug": "lateral-raise",
+    "name": "Lateral Raise",
+    "exerciseType": "weight_reps",
+    "equipment": "Dumbbell",
+    "primaryMuscle": "Shoulders",
+    "secondaryMuscles": [
+      "Upper Back"
+    ],
+    "isStretch": false,
+    "frames": [
+      {
+        "index": 1,
+        "path": "assets/lateral-raise/frame-1.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": {
+            "name": "Everkinetic",
+            "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0018-tension.svg",
+            "license": "CC BY-SA 4.0",
+            "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+            "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+          }
+        },
+        "local_path": "assets/exercises/lateral-raise-1.svg"
+      },
+      {
+        "index": 2,
+        "path": "assets/lateral-raise/frame-2.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/lateral-raise-2.svg"
+      }
+    ],
+    "attribution": {
+      "creator": "Bryl Lim",
+      "creatorUrl": "https://bryllim.com",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source": {
+        "name": "Everkinetic",
+        "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0018-tension.svg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+      }
+    },
+    "miGymChanges": "Recolored monochrome paths from white to navy (#263747); no pose geometry changed."
+  },
+  {
+    "id": "exercise-tricep-pushdown",
+    "slug": "tricep-pushdown",
+    "name": "Tricep Pushdown",
+    "exerciseType": "weight_reps",
+    "equipment": "Cable",
+    "primaryMuscle": "Triceps",
+    "secondaryMuscles": [
+      "Shoulders"
+    ],
+    "isStretch": false,
+    "frames": [
+      {
+        "index": 1,
+        "path": "assets/tricep-pushdown/frame-1.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": {
+            "name": "Everkinetic",
+            "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0205-tension.svg",
+            "license": "CC BY-SA 4.0",
+            "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+            "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+          }
+        },
+        "local_path": "assets/exercises/tricep-pushdown-1.svg"
+      },
+      {
+        "index": 2,
+        "path": "assets/tricep-pushdown/frame-2.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/tricep-pushdown-2.svg"
+      }
+    ],
+    "attribution": {
+      "creator": "Bryl Lim",
+      "creatorUrl": "https://bryllim.com",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source": {
+        "name": "Everkinetic",
+        "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0205-tension.svg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+      }
+    },
+    "miGymChanges": "Recolored monochrome paths from white to navy (#263747); no pose geometry changed."
+  },
+  {
+    "id": "exercise-bicep-curl",
+    "slug": "bicep-curl",
+    "name": "Bicep Curl",
+    "exerciseType": "weight_reps",
+    "equipment": "Dumbbell",
+    "primaryMuscle": "Biceps",
+    "secondaryMuscles": [
+      "Forearms"
+    ],
+    "isStretch": false,
+    "frames": [
+      {
+        "index": 1,
+        "path": "assets/bicep-curl/frame-1.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": {
+            "name": "Everkinetic",
+            "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0224-tension.svg",
+            "license": "CC BY-SA 4.0",
+            "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+            "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+          }
+        },
+        "local_path": "assets/exercises/bicep-curl-1.svg"
+      },
+      {
+        "index": 2,
+        "path": "assets/bicep-curl/frame-2.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/bicep-curl-2.svg"
+      }
+    ],
+    "attribution": {
+      "creator": "Bryl Lim",
+      "creatorUrl": "https://bryllim.com",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source": {
+        "name": "Everkinetic",
+        "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0224-tension.svg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+      }
+    },
+    "miGymChanges": "Recolored monochrome paths from white to navy (#263747); no pose geometry changed."
+  },
+  {
+    "id": "exercise-leg-press",
+    "slug": "leg-press",
+    "name": "Leg Press",
+    "exerciseType": "weight_reps",
+    "equipment": "Machine",
+    "primaryMuscle": "Quads",
+    "secondaryMuscles": [
+      "Glutes",
+      "Hamstrings"
+    ],
+    "isStretch": false,
+    "frames": [
+      {
+        "index": 1,
+        "path": "assets/leg-press/frame-1.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": {
+            "name": "Everkinetic",
+            "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0127-tension.svg",
+            "license": "CC BY-SA 4.0",
+            "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+            "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+          }
+        },
+        "local_path": "assets/exercises/leg-press-1.svg"
+      },
+      {
+        "index": 2,
+        "path": "assets/leg-press/frame-2.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/leg-press-2.svg"
+      }
+    ],
+    "attribution": {
+      "creator": "Bryl Lim",
+      "creatorUrl": "https://bryllim.com",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source": {
+        "name": "Everkinetic",
+        "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0127-tension.svg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+      }
+    },
+    "miGymChanges": "Recolored monochrome paths from white to navy (#263747); no pose geometry changed."
+  },
+  {
+    "id": "exercise-dumbbell-romanian-deadlift",
+    "slug": "dumbbell-romanian-deadlift",
+    "name": "Dumbbell Romanian Deadlift",
+    "exerciseType": "weight_reps",
+    "equipment": "Dumbbell",
+    "primaryMuscle": "Hamstrings",
+    "secondaryMuscles": [
+      "Glutes",
+      "Lower Back"
+    ],
+    "isStretch": false,
+    "frames": [
+      {
+        "index": 1,
+        "path": "assets/dumbbell-romanian-deadlift/frame-1.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/dumbbell-romanian-deadlift-1.svg"
+      },
+      {
+        "index": 2,
+        "path": "assets/dumbbell-romanian-deadlift/frame-2.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/dumbbell-romanian-deadlift-2.svg"
+      }
+    ],
+    "attribution": {
+      "creator": "Bryl Lim",
+      "creatorUrl": "https://bryllim.com",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+    },
+    "miGymChanges": "Recolored monochrome paths from white to navy (#263747); no pose geometry changed."
+  },
+  {
+    "id": "exercise-leg-extension",
+    "slug": "leg-extension",
+    "name": "Leg Extension",
+    "exerciseType": "weight_reps",
+    "equipment": "Machine",
+    "primaryMuscle": "Quads",
+    "secondaryMuscles": [],
+    "isStretch": false,
+    "frames": [
+      {
+        "index": 1,
+        "path": "assets/leg-extension/frame-1.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": {
+            "name": "Everkinetic",
+            "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0142-tension.svg",
+            "license": "CC BY-SA 4.0",
+            "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+            "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+          }
+        },
+        "local_path": "assets/exercises/leg-extension-1.svg"
+      },
+      {
+        "index": 2,
+        "path": "assets/leg-extension/frame-2.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/leg-extension-2.svg"
+      }
+    ],
+    "attribution": {
+      "creator": "Bryl Lim",
+      "creatorUrl": "https://bryllim.com",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source": {
+        "name": "Everkinetic",
+        "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0142-tension.svg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+      }
+    },
+    "miGymChanges": "Recolored monochrome paths from white to navy (#263747); no pose geometry changed."
+  },
+  {
+    "id": "exercise-seated-leg-curl",
+    "slug": "seated-leg-curl",
+    "name": "Seated Leg Curl",
+    "exerciseType": "weight_reps",
+    "equipment": "Machine",
+    "primaryMuscle": "Hamstrings",
+    "secondaryMuscles": [
+      "Calves"
+    ],
+    "isStretch": false,
+    "frames": [
+      {
+        "index": 1,
+        "path": "assets/seated-leg-curl/frame-1.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": {
+            "name": "Everkinetic",
+            "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0119-tension.svg",
+            "license": "CC BY-SA 4.0",
+            "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+            "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+          }
+        },
+        "local_path": "assets/exercises/seated-leg-curl-1.svg"
+      },
+      {
+        "index": 2,
+        "path": "assets/seated-leg-curl/frame-2.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/seated-leg-curl-2.svg"
+      }
+    ],
+    "attribution": {
+      "creator": "Bryl Lim",
+      "creatorUrl": "https://bryllim.com",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source": {
+        "name": "Everkinetic",
+        "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0119-tension.svg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+      }
+    },
+    "miGymChanges": "Recolored monochrome paths from white to navy (#263747); no pose geometry changed."
+  },
+  {
+    "id": "exercise-standing-calf-raise",
+    "slug": "standing-calf-raise",
+    "name": "Standing Calf Raise",
+    "exerciseType": "weight_reps",
+    "equipment": "Machine",
+    "primaryMuscle": "Calves",
+    "secondaryMuscles": [],
+    "isStretch": false,
+    "frames": [
+      {
+        "index": 1,
+        "path": "assets/standing-calf-raise/frame-1.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": {
+            "name": "Everkinetic",
+            "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0282-tension.svg",
+            "license": "CC BY-SA 4.0",
+            "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+            "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+          }
+        },
+        "local_path": "assets/exercises/standing-calf-raise-1.svg"
+      },
+      {
+        "index": 2,
+        "path": "assets/standing-calf-raise/frame-2.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/standing-calf-raise-2.svg"
+      }
+    ],
+    "attribution": {
+      "creator": "Bryl Lim",
+      "creatorUrl": "https://bryllim.com",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source": {
+        "name": "Everkinetic",
+        "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0282-tension.svg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+      }
+    },
+    "miGymChanges": "Recolored monochrome paths from white to navy (#263747); no pose geometry changed."
+  },
+  {
+    "id": "exercise-cable-crunch",
+    "slug": "cable-crunch",
+    "name": "Cable Crunch",
+    "exerciseType": "weight_reps",
+    "equipment": "Cable",
+    "primaryMuscle": "Core",
+    "secondaryMuscles": [],
+    "isStretch": false,
+    "frames": [
+      {
+        "index": 1,
+        "path": "assets/cable-crunch/frame-1.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": {
+            "name": "Everkinetic",
+            "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0288-tension.svg",
+            "license": "CC BY-SA 4.0",
+            "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+            "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+          }
+        },
+        "local_path": "assets/exercises/cable-crunch-1.svg"
+      }
+    ],
+    "attribution": {
+      "creator": "Bryl Lim",
+      "creatorUrl": "https://bryllim.com",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source": {
+        "name": "Everkinetic",
+        "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0288-tension.svg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+      }
+    },
+    "miGymChanges": "Recolored monochrome paths from white to navy (#263747); no pose geometry changed."
+  },
+  {
+    "id": "exercise-chest-supported-row",
+    "slug": "chest-supported-row",
+    "name": "Chest Supported Row",
+    "exerciseType": "weight_reps",
+    "equipment": "Machine",
+    "primaryMuscle": "Back",
+    "secondaryMuscles": [
+      "Biceps",
+      "Rear Delts"
+    ],
+    "isStretch": false,
+    "frames": [
+      {
+        "index": 1,
+        "path": "assets/chest-supported-row/frame-1.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/chest-supported-row-1.svg"
+      },
+      {
+        "index": 2,
+        "path": "assets/chest-supported-row/frame-2.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/chest-supported-row-2.svg"
+      }
+    ],
+    "attribution": {
+      "creator": "Bryl Lim",
+      "creatorUrl": "https://bryllim.com",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+    },
+    "miGymChanges": "Recolored monochrome paths from white to navy (#263747); no pose geometry changed."
+  },
+  {
+    "id": "exercise-incline-dumbbell-press",
+    "slug": "incline-dumbbell-press",
+    "name": "Incline Dumbbell Press",
+    "exerciseType": "weight_reps",
+    "equipment": "Dumbbell",
+    "primaryMuscle": "Chest",
+    "secondaryMuscles": [
+      "Shoulders",
+      "Triceps"
+    ],
+    "isStretch": false,
+    "frames": [
+      {
+        "index": 1,
+        "path": "assets/incline-dumbbell-press/frame-1.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "source": {
+            "name": "Everkinetic",
+            "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0061-tension.svg",
+            "license": "CC BY-SA 4.0",
+            "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+            "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+          }
+        },
+        "local_path": "assets/exercises/incline-dumbbell-press-1.svg"
+      },
+      {
+        "index": 2,
+        "path": "assets/incline-dumbbell-press/frame-2.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/incline-dumbbell-press-2.svg"
+      }
+    ],
+    "attribution": {
+      "creator": "Bryl Lim",
+      "creatorUrl": "https://bryllim.com",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source": {
+        "name": "Everkinetic",
+        "url": "https://github.com/everkinetic/data/blob/main/dist/svg/0061-tension.svg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "changes": "Rasterized on a transparent 512 × 512 canvas, recolored for monochrome display, and vector-traced."
+      }
+    },
+    "miGymChanges": "Recolored monochrome paths from white to navy (#263747); no pose geometry changed."
+  },
+  {
+    "id": "exercise-machine-shoulder-press",
+    "slug": "machine-shoulder-press",
+    "name": "Machine Shoulder Press",
+    "exerciseType": "weight_reps",
+    "equipment": "Machine",
+    "primaryMuscle": "Shoulders",
+    "secondaryMuscles": [
+      "Triceps"
+    ],
+    "isStretch": false,
+    "frames": [
+      {
+        "index": 1,
+        "path": "assets/machine-shoulder-press/frame-1.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/machine-shoulder-press-1.svg"
+      },
+      {
+        "index": 2,
+        "path": "assets/machine-shoulder-press/frame-2.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/machine-shoulder-press-2.svg"
+      }
+    ],
+    "attribution": {
+      "creator": "Bryl Lim",
+      "creatorUrl": "https://bryllim.com",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+    },
+    "miGymChanges": "Recolored monochrome paths from white to navy (#263747); no pose geometry changed."
+  },
+  {
+    "id": "exercise-goblet-squat",
+    "slug": "goblet-squat",
+    "name": "Goblet Squat",
+    "exerciseType": "weight_reps",
+    "equipment": "Dumbbell",
+    "primaryMuscle": "Quads",
+    "secondaryMuscles": [
+      "Glutes",
+      "Core"
+    ],
+    "isStretch": false,
+    "frames": [
+      {
+        "index": 1,
+        "path": "assets/goblet-squat/frame-1.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/goblet-squat-1.svg"
+      },
+      {
+        "index": 2,
+        "path": "assets/goblet-squat/frame-2.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/goblet-squat-2.svg"
+      }
+    ],
+    "attribution": {
+      "creator": "Bryl Lim",
+      "creatorUrl": "https://bryllim.com",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+    },
+    "miGymChanges": "Recolored monochrome paths from white to navy (#263747); no pose geometry changed."
+  },
+  {
+    "id": "exercise-hip-thrust",
+    "slug": "hip-thrust",
+    "name": "Hip Thrust",
+    "exerciseType": "weight_reps",
+    "equipment": "Barbell",
+    "primaryMuscle": "Glutes",
+    "secondaryMuscles": [
+      "Hamstrings"
+    ],
+    "isStretch": false,
+    "frames": [
+      {
+        "index": 1,
+        "path": "assets/hip-thrust/frame-1.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/hip-thrust-1.svg"
+      },
+      {
+        "index": 2,
+        "path": "assets/hip-thrust/frame-2.svg",
+        "width": 512,
+        "height": 512,
+        "format": "svg",
+        "attribution": {
+          "creator": "Bryl Lim",
+          "creatorUrl": "https://bryllim.com",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+        },
+        "local_path": "assets/exercises/hip-thrust-2.svg"
+      }
+    ],
+    "attribution": {
+      "creator": "Bryl Lim",
+      "creatorUrl": "https://bryllim.com",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+    },
+    "miGymChanges": "Recolored monochrome paths from white to navy (#263747); no pose geometry changed."
+  }
+]
