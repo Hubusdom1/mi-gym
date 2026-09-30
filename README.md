@@ -111,14 +111,14 @@ Con una referencia comparable, si falta el esfuerzo de la última serie o alguna
 
 Los plazos, el número de sesiones y el límite del 10 % son decisiones conservadoras del producto; no son una prescripción clínica ni una recomendación individual validada. El usuario revisa siempre la propuesta. La app no decide cargas a partir del peso corporal, altura o edad.
 
-La clave de datos sigue siendo `mi-gym-v1`: las instalaciones y copias anteriores no necesitan esfuerzo anotado para abrirse. El guardado conserva la sesión en curso y revierte el cambio si falla el almacenamiento. La caché de recursos actual es `mi-gym-shell-v10-splits-warmups`.
+La clave de datos sigue siendo `mi-gym-v1`: las instalaciones y copias anteriores no necesitan esfuerzo anotado para abrirse. El guardado conserva la sesión en curso y revierte el cambio si falla el almacenamiento. La caché de recursos actual es `mi-gym-shell-v11-email-codes`.
 
 Pruebas: `tests/progression.test.cjs` verifica las decisiones a partir del historial, límites y casos incompletos, revisión/cancelación/edición, saltos de carga, copia de series, esfuerzo y su invalidación, importación, errores de almacenamiento y conservación de sesiones y sustituciones. También se ejecutan las pruebas existentes de registro, frecuencia y perfil. Se comprueban lógica e interacción DOM; queda pendiente una revisión visual en un iPhone real.
 
 
 ## Cuentas y sincronización (versión 7)
 
-En **Cuenta** o **Perfil > Iniciar sesión**, la integración ofrece registro, acceso, recuperación de contraseña y cierre de sesión. El registro requiere confirmar el correo. En una cuenta nueva puedes pasar explícitamente los datos de este dispositivo o empezar de cero: nunca se suben automáticamente datos de invitado a otra cuenta.
+En **Cuenta** o **Perfil > Iniciar sesión**, la integración ofrece registro, acceso, recuperación de contraseña y cierre de sesión. El registro requiere confirmar el correo. La versión 11 prepara la confirmación mediante código; su activación y el remitente corporativo requieren conectar SMTP y las plantillas descritas al final. En una cuenta nueva puedes pasar explícitamente los datos de este dispositivo o empezar de cero: nunca se suben automáticamente datos de invitado a otra cuenta.
 
 El guardado conserva primero una copia local y después sincroniza. Antes de cambiar de teléfono, comprueba **Guardado en la nube**. La primera descarga requiere conexión. Si dos dispositivos modifican una misma versión, se pide elegir cuál conservar; no se fusionan automáticamente. Se conserva una copia de recuperación local y se pueden descargar ambas versiones. Esos archivos contienen objetos `local` y `cloud`; para importar uno se debe extraer el objeto elegido a un JSON normal de Mi Gym.
 
@@ -144,16 +144,16 @@ En el proyecto actual ya están completados los pasos 1–3. Falta finalizar los
 Además de las pruebas existentes, `tests/cloud.test.cjs` ejecuta la migración en PostgreSQL mediante PGlite y comprueba permisos, aislamiento de cuentas, revisión de escrituras, dos dispositivos, trabajo sin conexión, conflictos, respuestas perdidas, cambios durante una subida y errores de almacenamiento. Las pruebas DOM comprueban acceso, cambio a invitado y el estado sin configurar. No sustituyen una prueba de Auth y correo con el proyecto real ni una revisión visual en iPhone.
 
 
-### Siguiente ajuste para esta instalación
+### URLs de esta instalación y correos pendientes
 
-En [Authentication > URL Configuration](https://supabase.com/dashboard/project/hsegquwjytlglabjnkjc/auth/url-configuration), establecer:
+El propietario confirmó que completó [Authentication > URL Configuration](https://supabase.com/dashboard/project/hsegquwjytlglabjnkjc/auth/url-configuration) y que la cuenta sincroniza. La configuración indicada para Sites es:
 
 - **Site URL:** `https://mi-gym-hugo.hubusdom.chatgpt.site/`
 - **Redirect URLs:** añadir `https://mi-gym-hugo.hubusdom.chatgpt.site/` y `https://mi-gym-hugo.hubusdom.chatgpt.site/index.html`.
 
-Guardar los cambios. Para una versión en GitHub Pages, añadir también su dirección real con la subcarpeta correcta; no usar como sustituto la URL de otra app. La publicación de Sites conserva su acceso privado y todavía no es un enlace abierto para amigos.
+Para una versión en GitHub Pages, añadir también su dirección real con la subcarpeta correcta; no usar como sustituto la URL de otra app. La publicación de Sites conserva su acceso privado y todavía no es un enlace abierto para amigos. Un correo que redirige a esa versión privada puede mostrar el acceso de ChatGPT; confirmar por código evita ese salto, pero no cambia el público del alojamiento.
 
-El envío de correos por defecto permite probar con el correo del propietario de Supabase; amigos y familiares necesitan un proveedor SMTP configurado. Después de configurar las URLs, el propietario puede crear su cuenta desde la app, confirmar el correo y elegir si migra sus datos locales. La contraseña se introduce exclusivamente en la app. Verificar **Guardado en la nube** y después iniciar sesión en un segundo dispositivo con la misma cuenta.
+El envío de correos por defecto permite probar con el correo del propietario de Supabase; amigos y familiares necesitan un proveedor SMTP configurado. El propietario ya ha creado y confirmado su cuenta. La contraseña se introduce exclusivamente en la app. Antes de cambiar de teléfono, verificar **Guardado en la nube** y después iniciar sesión en el segundo dispositivo con la misma cuenta.
 
 El 29-09-2026, Supabase indicó coste de creación de este proyecto de 0 al mes. No se ha contratado un plan de pago ni un proveedor de correo. Este dato no garantiza costes futuros si se cambian el plan o los servicios.
 
@@ -194,3 +194,19 @@ La carga propuesta de aproximación queda vacía si faltan datos, la sesión tie
 Para adoptar la nueva distribución en una instalación existente, abre **Días y rutina**, revisa y aplica la propuesta. Las rutinas futuras antiguas con menos de tres series pasan al mínimo; los entrenamientos guardados y una sesión ya iniciada conservan sus datos reales. Recuperar un plan anterior aplica el mínimo a su copia para entrenamientos futuros. Al sustituir un ejercicio parcialmente completado se conservan las series y la aproximación realizadas y solo se sustituye el trabajo pendiente.
 
 `tests/warmup.test.cjs` comprueba las distribuciones de 1–6 días y tres niveles, frecuencia de los grupos, mínimos, orden, duración, registro y recarga de aproximaciones, propuestas a partir de datos reales, edición de cargas, redondeo, datos incompletos, separación de récords, sustituciones y reversión si falla el almacenamiento. Las siete suites de pruebas cubren también el registro anterior, los perfiles, la progresión y la sincronización; no sustituyen una revisión visual en un iPhone real.
+
+## Confirmación por código y marca del correo (versión 11)
+
+**Estado: preparado en la app, pendiente de activar el envío real.** `emailCodeEnabled` se mantiene en `false` hasta conectar un remitente de un dominio del propietario y guardar las dos plantillas en Supabase. `emailSetupPending` continúa en `true`. La entrega no ha configurado SMTP ni enviado correos reales y no anuncia que esos correos ya incluyan un código.
+
+El flujo preparado mantiene las cuentas con correo y contraseña: tras el registro, pide un código de un solo uso dentro de Mi Gym. Usa `verifyOtp` del servidor con tipo `email`; no valida ni confirma cuentas solo en el navegador. Incluye autocompletado de código, pegado con espacios, ceros iniciales, errores de caducidad y reenvío con espera de 60 segundos, además de los límites de Supabase. Un acceso con correo todavía sin confirmar ofrece continuar la confirmación y reenviar el correo.
+
+La recuperación utiliza un código de tipo `recovery`, seguido de una nueva contraseña. Una verificación fallida no abre la cuenta. La pestaña recuerda solo correo, propósito e instante del envío en `sessionStorage`, durante un máximo de 24 horas; no persiste el código ni la contraseña ahí ni en el estado de entrenamiento. Una confirmación correcta sigue pidiendo autorización para pasar los datos locales a una cuenta nueva.
+
+Los enlaces antiguos siguen siendo compatibles. Mientras se conecta SMTP, **Ya tengo un código / Continuar confirmación** permite acceder a la nueva pantalla y explica qué hacer si el correo aún contiene un enlace. Con SMTP y plantillas activados, cambiar `emailCodeEnabled` a `true` abre directamente el flujo por código tras registro y recuperación.
+
+Las plantillas `supabase/email-templates/confirm-signup.html` y `reset-password.html` llevan la marca Mi Gym y `{{ .Token }}`, sin enlaces de confirmación ni imágenes remotas. Los asuntos, remitente, pasos de DNS/SMTP y activación están en `supabase/email-templates/ACTIVAR-CORREOS.md`. En el ZIP esta carpeta se encuentra en **setup/email-templates**. Cambiar archivos locales no configura el proveedor remoto. La dirección corporativa queda por elegir; las claves SMTP deben introducirse únicamente en los campos seguros del proveedor.
+
+Supabase cambió las condiciones el 3-06-2026: los proyectos gratuitos nuevos con el SMTP predeterminado no pueden personalizar plantillas hasta configurar SMTP propio. [Cambio oficial](https://supabase.com/changelog/46599-changes-to-email-template-customisation-on-free-tier). Esto afecta al proyecto de esta app, creado después de esa fecha; no hace falta cambiar la base de datos ni las cuentas.
+
+`tests/auth.test.cjs` verifica registro, códigos correctos/incorrectos/caducados, recarga, reenvío, límites, sesión verificada, recuperación, separación de los datos de invitado, ausencia de contraseñas/códigos persistidos, compatibilidad del modo anterior y las plantillas. Usa un proveedor simulado y no sustituye comprobar recepción, remitente y verificación reales al activar SMTP.

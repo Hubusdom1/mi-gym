@@ -4,6 +4,15 @@ window.GYM_ACCOUNT = (() => {
   let configured=false;
   try {const u=new URL(config.url);configured=u.protocol==='https:'&&u.hostname.endsWith('.supabase.co')&&u.pathname==='/'&&!u.username&&!u.password&&/^sb_publishable_[A-Za-z0-9_-]+$/.test(config.publishableKey);}catch{}
   let client=null,user=null,core=null,mode=configured?'checking':'guest',generation=0,debounce=null,formMode='login',busy=false,notice='',recovery=false;
+  const codeEmails=config.emailCodeEnabled===true,pendingKey='mi-gym-email-check:'+String(config.url||''),resendDelay=60000;
+  const validEmail=email=>email.length<=254&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  let pending=null;
+  try {const saved=JSON.parse(sessionStorage.getItem(pendingKey)||'null');if(saved&&validEmail(saved.email||'')&&['signup','recovery'].includes(saved.kind)&&Number.isFinite(saved.sentAt)&&Date.now()-saved.sentAt<86400000&&saved.sentAt<=Date.now())pending=saved;}catch{}
+  if(pending)formMode='verify';
+  function rememberPending(email,kind,sentAt=0){pending={email,kind,sentAt};try{sessionStorage.setItem(pendingKey,JSON.stringify(pending));}catch{}}
+  function clearPending(){pending=null;try{sessionStorage.removeItem(pendingKey);}catch{}}
+  function resendWait(){return pending?Math.max(0,Math.ceil((pending.sentAt+resendDelay-Date.now())/1000)):0;}
+  function updateResend(){const button=document.querySelector('[data-action="account-resend"]');if(!button)return;const wait=resendWait();button.disabled=busy||wait>0;button.textContent=wait?`Reenviar en ${wait} s`:'Reenviar correo';}
   const labels={loading:'Cargando tu cuenta…',syncing:'Sincronizando…',synced:'Guardado en la nube',pending:'Cambios pendientes de subir',offline:'Sin conexión · copia local',expired:'Vuelve a iniciar sesión',conflict:'Hay cambios en dos dispositivos',missing:'Elige cómo empezar',corrupt:'No se pudieron validar tus datos',storage:'No se pudo guardar en este dispositivo', 'other-tab':'Se abrió otra copia de esta cuenta'};
   const statusText=()=>mode==='checking'?'Comprobando tu cuenta…':mode==='account'?(labels[core?.status]||'Cargando tu cuenta…'):'Solo en este dispositivo';
   function canWrite(){return mode==='guest'||mode==='account'&&core?.canWrite();}
@@ -38,7 +47,8 @@ window.GYM_ACCOUNT = (() => {
     if(event==='PASSWORD_RECOVERY'){recovery=true;formMode='password';}
     if(session?.user?.id===user?.id&&core){if(recovery)show();else if(core.status==='expired')await core.sync(true);return;}
     const ticket=++generation;core?.close();clearTimeout(debounce);core=null;user=session?.user||null;notice='';
-    if(!user){mode='guest';recovery=false;formMode='login';const data=guestData();replaceApp(data||freshState());paint();return;}
+    if(!user){mode='guest';recovery=false;formMode='login';clearPending();const data=guestData();replaceApp(data||freshState());paint();return;}
+    clearPending();if(!recovery)formMode='login';
     mode='account';replaceApp(freshState());paint();
     const current=new GYM_CLOUD_STORE.Store({userId:user.id,namespace:new URL(config.url).hostname,storage:localStorage,transport:transportFor(user.id),validate:validState,normalize:normalizeState,
       onState:data=>{if(ticket===generation)replaceApp(data);},
@@ -51,16 +61,22 @@ window.GYM_ACCOUNT = (() => {
   function authMessage(error){
     if(error?.code==='invalid_credentials')return 'El correo o la contraseña no son correctos.';
     if(error?.code==='email_not_confirmed')return 'Confirma tu correo antes de iniciar sesión.';
+    if(['otp_expired','invalid_token','otp_disabled'].includes(error?.code))return 'El código no es válido o ha caducado. Comprueba el último correo recibido o solicita otro.';
     if(error?.code==='over_email_send_rate_limit'||error?.status===429)return 'Se ha alcanzado el límite de intentos. Espera un poco y vuelve a probar.';
     if(error?.code==='weak_password')return 'Elige una contraseña más larga y difícil de adivinar.';
     if(error?.code==='email_address_not_authorized')return 'El envío de correos de esta prueba aún no está activado. Contacta con el responsable de Mi Gym.';
     return 'No se pudo completar la operación. Comprueba la conexión e inténtalo de nuevo.';
   }
   function summary(data){return `${data?.history?.length||0} entrenamientos · ${data?.routines?.length||0} días de rutina${data?.active?' · sesión en curso':''}`;}
+  function verificationForm(){
+    const recovering=pending?.kind==='recovery',wait=resendWait();
+    return `<h2>${recovering?'Recupera tu acceso':'Confirma tu correo'}</h2><p class="note">${codeEmails?'Introduce el código del correo de Mi Gym sin salir de esta pantalla.':'Si tu correo incluye un código, introdúcelo aquí. Si solo contiene un enlace, puedes usarlo y volver a iniciar sesión.'}</p><form id="account-auth-form" novalidate><label for="account-email">Correo electrónico</label><input id="account-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" required value="${esc(pending?.email||'')}" ${pending?.email?'readonly':''}><label for="account-code">Código de confirmación</label><input id="account-code" class="account-code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,10}" minlength="6" maxlength="20" autocapitalize="off" spellcheck="false" placeholder="Introduce el código" aria-describedby="account-code-help account-message" required><p id="account-code-help" class="note account-code-help">Copia todos los dígitos del último correo. El código es de un solo uso.</p><p id="account-message" class="account-message" role="status">${esc(notice)}</p><button class="btn lime full" type="submit" ${busy?'disabled':''}>${busy?'Comprobando…':recovering?'Verificar y cambiar contraseña':'Confirmar y entrar'}</button></form><div class="account-links"><button class="textbtn" data-action="account-resend" ${busy||wait?'disabled':''}>${wait?`Reenviar en ${wait} s`:'Reenviar correo'}</button><button class="textbtn" data-action="account-change-email" ${busy?'disabled':''}>Cambiar correo</button><button class="textbtn" data-action="account-form" data-form="login" ${busy?'disabled':''}>Volver a iniciar sesión</button></div><p class="note account-code-help">Si no llega, revisa la carpeta de spam.</p>`;
+  }
   function authForm(){
+    if(formMode==='verify')return verificationForm();
     const reset=formMode==='reset',signup=formMode==='signup',password=formMode==='password';
     const title=password?'Nueva contraseña':reset?'Recuperar contraseña':signup?'Crea tu cuenta':'Inicia sesión';
-    return `<h2>${title}</h2><p class="note">${password?'Elige una contraseña para seguir usando tu cuenta.':reset?'Te enviaremos un enlace para cambiarla.':'Usa la misma cuenta en tus dispositivos para recuperar tu rutina y tus entrenamientos.'}</p>${config.emailSetupPending?'<p class="note">Prueba inicial: falta completar la configuración de los correos de acceso. El registro y la recuperación pueden no estar disponibles todavía.</p>':''}<form id="account-auth-form" novalidate>${password?'':`<label for="account-email">Correo electrónico</label><input id="account-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" required value="${esc(user?.email||'')}">`}${reset?'':`<label for="account-password">Contraseña${signup||password?' · mínimo 12 caracteres':''}</label><input id="account-password" name="password" type="password" autocomplete="${signup||password?'new-password':'current-password'}" required maxlength="128" ${signup||password?'minlength="12"':''}>`}${signup||password?'<label for="account-confirm">Repite la contraseña</label><input id="account-confirm" name="confirm" type="password" autocomplete="new-password" required maxlength="128">':''}<p id="account-message" class="account-message" role="status">${esc(notice)}</p><button class="btn lime full" type="submit" ${busy?'disabled':''}>${busy?'Un momento…':password?'Guardar contraseña':reset?'Enviar enlace':signup?'Crear cuenta':'Entrar'}</button></form>${password?'':`<div class="account-links"><button class="textbtn" data-action="account-form" data-form="${signup||reset?'login':'signup'}">${signup||reset?'Ya tengo una cuenta':'Crear una cuenta'}</button>${!reset?'<button class="textbtn" data-action="account-form" data-form="reset">Olvidé mi contraseña</button>':''}</div>`}`;
+    return `<h2>${title}</h2><p class="note">${password?'Elige una contraseña para seguir usando tu cuenta.':reset?(codeEmails?'Te enviaremos un código para cambiarla desde la app.':'Te enviaremos un enlace para cambiarla.'):'Usa la misma cuenta en tus dispositivos para recuperar tu rutina y tus entrenamientos.'}</p>${config.emailSetupPending?'<p class="note">Prueba inicial: el envío de correos para nuevas cuentas todavía está limitado.</p>':''}<form id="account-auth-form" novalidate>${password?'':`<label for="account-email">Correo electrónico</label><input id="account-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" required value="${esc(user?.email||pending?.email||'')}">`}${reset?'':`<label for="account-password">Contraseña${signup||password?' · mínimo 12 caracteres':''}</label><input id="account-password" name="password" type="password" autocomplete="${signup||password?'new-password':'current-password'}" required maxlength="128" ${signup||password?'minlength="12"':''}>`}${signup||password?'<label for="account-confirm">Repite la contraseña</label><input id="account-confirm" name="confirm" type="password" autocomplete="new-password" required maxlength="128">':''}<p id="account-message" class="account-message" role="status">${esc(notice)}</p><button class="btn lime full" type="submit" ${busy?'disabled':''}>${busy?'Un momento…':password?'Guardar contraseña':reset?(codeEmails?'Enviar código':'Enviar enlace'):signup?'Crear cuenta':'Entrar'}</button></form>${password?'':`<div class="account-links"><button class="textbtn" data-action="account-form" data-form="${signup||reset?'login':'signup'}">${signup||reset?'Ya tengo una cuenta':'Crear una cuenta'}</button>${!reset?'<button class="textbtn" data-action="account-form" data-form="reset">Olvidé mi contraseña</button>':''}<button class="textbtn" data-action="account-form" data-form="verify" data-kind="${reset?'recovery':pending?.kind||'signup'}">${pending?'Continuar confirmación':'Ya tengo un código'}</button></div>`}`;
   }
   function accountContent(){
     if(!configured)return '<h2>Tu cuenta, en cualquier móvil</h2><p class="note">El acceso con cuenta está preparado, pero falta activar la conexión de esta versión. Tus datos actuales siguen guardándose en este dispositivo.</p><p class="note">Cuando esté activa, podrás iniciar sesión en otro teléfono y recuperar tu perfil, tus rutinas y tus entrenamientos.</p>';
@@ -78,7 +94,7 @@ window.GYM_ACCOUNT = (() => {
     body+=`<p id="account-message" class="account-message" role="status">${esc(notice)}</p><p class="account-privacy">Perfil, rutinas, notas e historial privados de tu cuenta. Se mantiene una copia local para entrenar sin conexión.</p><button class="textbtn" data-action="account-signout">Cerrar sesión en este dispositivo</button>`;
     return body;
   }
-  function show(){modal(`<div class="account-heading"><span class="pill">MI GYM</span><button class="textbtn" data-action="close" aria-label="Cerrar cuenta">Cerrar</button></div>${accountContent()}`);$('#modal').classList.add('account-dialog');$('#modal').setAttribute('aria-label','Tu cuenta de Mi Gym');}
+  function show(){modal(`<div class="account-heading"><span class="pill">MI GYM</span><button class="textbtn" data-action="close" aria-label="Cerrar cuenta">Cerrar</button></div>${accountContent()}`);$('#modal').classList.add('account-dialog');$('#modal').setAttribute('aria-label','Tu cuenta de Mi Gym');updateResend();}
   function download(value,name){const url=URL.createObjectURL(new Blob([JSON.stringify(value,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
   async function initialize(useGuest){
     if(!core||core.status!=='missing'||busy)return;
@@ -100,9 +116,10 @@ window.GYM_ACCOUNT = (() => {
   }
   async function submitAuth(form){
     if(busy||!client)return;
+    if(formMode==='verify'){await verifyCode(form);return;}
     const f=new FormData(form),email=String(f.get('email')||'').trim(),password=String(f.get('password')||''),passwordMode=formMode==='password',signup=formMode==='signup',reset=formMode==='reset';
     const message=document.querySelector('#account-message');
-    if(!passwordMode&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){message.textContent='Introduce un correo válido.';return;}
+    if(!passwordMode&&!validEmail(email)){message.textContent='Introduce un correo válido.';return;}
     if(!reset&&(!password||password.length>128||(signup||passwordMode)&&password.length<12)){message.textContent='Usa una contraseña de 12 a 128 caracteres al crearla.';return;}
     if((signup||passwordMode)&&password!==f.get('confirm')){message.textContent='Las contraseñas no coinciden.';return;}
     busy=true;form.querySelector('button[type="submit"]').disabled=true;message.textContent='Un momento…';
@@ -115,13 +132,44 @@ window.GYM_ACCOUNT = (() => {
       else result=await client.auth.signInWithPassword({email,password});
       if(result.error)throw result.error;
       notice=reset?'Si el correo corresponde a una cuenta, recibirás un enlace para recuperar el acceso.':signup&&!result.data.session?'Revisa tu correo para confirmar la cuenta y después inicia sesión.':'';
+      if((reset||signup)&&!result.data?.session){rememberPending(email,reset?'recovery':'signup',Date.now());if(codeEmails){formMode='verify';notice=reset?'Si el correo corresponde a una cuenta, recibirás un código para recuperar el acceso.':'Revisa tu correo para continuar. Si ya tenías una cuenta confirmada, vuelve a iniciar sesión.';}}
       if(passwordMode){recovery=false;formMode='login';notice='Contraseña actualizada.';}
       if(result.data?.session)formMode='login';
       busy=false;
       if(result.data?.session)await sessionChanged(result.data.session);
       show();
-    }catch(error){busy=false;notice=authMessage(error);const node=document.querySelector('#account-message');if(node)node.textContent=notice;const btn=document.querySelector('#account-auth-form button[type="submit"]');if(btn)btn.disabled=false;}
+    }catch(error){busy=false;notice=authMessage(error);if(error?.code==='email_not_confirmed'){rememberPending(email,'signup');formMode='verify';show();}else {const node=document.querySelector('#account-message');if(node)node.textContent=notice;const btn=document.querySelector('#account-auth-form button[type="submit"]');if(btn)btn.disabled=false;}}
     finally{form.querySelectorAll('input[type="password"]').forEach(i=>i.value='');}
+  }
+  async function verifyCode(form){
+    const f=new FormData(form),email=String(f.get('email')||'').trim(),token=String(f.get('code')||'').replace(/\s/g,''),message=document.querySelector('#account-message');
+    if(!validEmail(email)){message.textContent='Introduce un correo válido.';return;}
+    if(!/^[0-9]{6,10}$/.test(token)){message.textContent='Introduce los 6 a 10 dígitos del código recibido.';return;}
+    const kind=pending?.kind||'signup';
+    if(!pending||pending.email!==email)rememberPending(email,kind);
+    busy=true;form.querySelector('button[type="submit"]').disabled=true;updateResend();message.textContent='Comprobando…';
+    try {
+      const result=await client.auth.verifyOtp({email,token,type:kind==='recovery'?'recovery':'email'});
+      if(result.error)throw result.error;
+      if(!result.data?.session)throw Error('Missing verified session');
+      clearPending();notice='';formMode=kind==='recovery'?'password':'login';
+      await sessionChanged(result.data.session,kind==='recovery'?'PASSWORD_RECOVERY':'SIGNED_IN');
+      busy=false;show();if(kind!=='recovery')toast('Correo confirmado. Ya estás dentro de tu cuenta.');
+    }catch(error){busy=false;notice=authMessage(error);show();}
+    finally{const field=form.querySelector('[name="code"]');if(field)field.value='';}
+  }
+  async function resendCode(){
+    if(busy||!client||resendWait())return;
+    const email=String(document.querySelector('#account-email')?.value||pending?.email||'').trim(),kind=pending?.kind||'signup';
+    if(!validEmail(email)){notice='Introduce un correo válido para reenviar la confirmación.';const message=document.querySelector('#account-message');if(message)message.textContent=notice;return;}
+    busy=true;updateResend();const message=document.querySelector('#account-message');if(message)message.textContent='Enviando…';
+    try {
+      const redirectTo=location.origin+location.pathname;
+      const result=kind==='recovery'?await client.auth.resetPasswordForEmail(email,{redirectTo}):await client.auth.resend({type:'signup',email,options:{emailRedirectTo:redirectTo}});
+      if(result.error)throw result.error;
+      rememberPending(email,kind,Date.now());notice=kind==='recovery'?'Si el correo corresponde a una cuenta, recibirás otro correo de recuperación. Utiliza el más reciente.':'Si la cuenta necesita confirmación, recibirás un nuevo correo. Utiliza el más reciente.';
+    }catch(error){notice=authMessage(error);if(error?.status===429||error?.code==='over_email_send_rate_limit')rememberPending(email,kind,Date.now());}
+    busy=false;show();
   }
   async function init(){
     if(!configured){paint();return;}
@@ -133,12 +181,15 @@ window.GYM_ACCOUNT = (() => {
       document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')core?.sync();});
       window.addEventListener('storage',ev=>{if(ev.key===core?.key)core.checkOtherTab();});
       setInterval(()=>{if(document.visibilityState!=='hidden')core?.sync();},30000);
+      setInterval(updateResend,1000);
     }catch {mode='guest';notice='No se pudo conectar el acceso a tu cuenta. Tus datos locales siguen disponibles.';paint();}
   }
   document.addEventListener('click',event=>{
     const button=event.target.closest('[data-action]');if(!button||button.disabled)return;const a=button.dataset.action;
     if(a==='account-show')show();
-    if(a==='account-form'){formMode=button.dataset.form;notice='';show();}
+    if(a==='account-form'&&!busy){formMode=button.dataset.form;notice='';if(formMode==='verify'){const kind=button.dataset.kind==='recovery'?'recovery':'signup';if(!pending||pending.kind!==kind)rememberPending(pending?.email||'',kind);}show();}
+    if(a==='account-resend')resendCode();
+    if(a==='account-change-email'&&!busy){formMode=pending?.kind==='recovery'?'reset':'signup';clearPending();notice='';show();}
     if(a==='account-sync')core?.sync(true);
     if(a==='account-migrate')initialize(true);
     if(a==='account-empty')initialize(false);
