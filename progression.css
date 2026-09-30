@@ -46,3 +46,9 @@
 .suggestion-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
 .suggestion-actions .btn{min-height:48px}
 @media(max-width:500px){.suggestion-dialog{padding:20px 16px}.suggestion-title h2{font-size:24px}.suggestion-card{padding:16px}.suggestion-heading h3{font-size:16px}.suggestion-fields{grid-template-columns:1fr;gap:16px}.target-reps{grid-template-columns:repeat(auto-fit,minmax(48px,1fr))}.suggestion-actions{flex-direction:column-reverse}.suggestion-actions .btn{width:100%}.session-guidance>strong{font-size:17px}.hero-proposal{text-align:center}}
+
+.warmup-block,.warmup-proposal{margin:20px 0;padding:16px;background:var(--bg);border:1px solid var(--line);border-left:4px solid var(--green);border-radius:12px}
+.warmup-block .eyebrow,.warmup-proposal .eyebrow{font-size:12px;line-height:1.6}
+.warmup-tag{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--lime);color:var(--ink);font-weight:700}
+.warmup-block .note,.warmup-proposal .note{font-size:14px;margin:10px 0}
+.history-warmup{font-size:14px;color:var(--muted)}

@@ -39,6 +39,22 @@ window.GYM_PROGRESSION = (() => {
     Object.assign(result,{status:'load',title:'Probar el siguiente peso',kg:round(kg+step),reps:Array(count).fill(exercise.min),reason:'En dos sesiones comparables completaste el máximo del rango con al menos dos repeticiones en reserva al terminar. Se propone un salto disponible y volver al inicio del rango.'});
     return result;
   }
+  function suggestWarmup(exercise,history,{workKg=null,step=null,now=Date.now()}={}){
+    const result={kg:null,reps:8,reason:'Elige una carga ligera para practicar el movimiento y anótala. Servirá como referencia para la próxima sesión.',sourceId:null,sourceDate:null,reference:null};
+    const sessions=history.filter(s=>Number.isFinite(s.finished)&&s.finished<=now&&s.exercises.some(e=>e.id===exercise.id&&e.warmup?.done)).sort((a,b)=>b.finished-a.finished);
+    if(!sessions.length)return result;
+    const session=sessions[0],matches=session.exercises.filter(e=>e.id===exercise.id&&e.warmup?.done),old=matches[0],w=old.warmup;
+    Object.assign(result,{sourceId:session.id,sourceDate:session.finished,reference:{kg:w.kg,reps:w.reps}});
+    if(matches.length!==1||old.retained||old.swappedFrom||now-session.finished>21*DAY){result.reason='La aproximación anterior es antigua o corresponde a una sustitución. Úsala solo como referencia y revisa la carga.';return result;}
+    const work=old.logs.find(l=>l.done),ratio=work?.kg>0?w.kg/work.kg:null;
+    if(!Number.isFinite(workKg)||workKg<=0){result.reason='Revisa primero la carga de trabajo. Conservamos tu última aproximación como referencia, sin fijar un peso para hoy.';return result;}
+    if(!Number.isFinite(ratio)||ratio<=0||ratio>0.7||!Number.isInteger(w.reps)||w.reps<1||w.reps>20){result.reason='La referencia no permite calcular una aproximación ligera comparable. Elige su carga y repeticiones manualmente.';return result;}
+    const raw=workKg*ratio,kg=Number.isFinite(step)&&step>=0.1?round(Math.floor((raw+1e-9)/step)*step):Math.floor(raw*10)/10;
+    if(kg<=0||kg>=workKg){result.reason='No se puede proponer una carga ligera con ese salto disponible. Elige una aproximación cómoda para el material que uses.';return result;}
+    result.kg=kg;result.reps=w.reps;result.reason=`Tu última aproximación fue ${w.kg} kg × ${w.reps}, antes de trabajar con ${work.kg} kg. Se mantiene aproximadamente esa proporción para el objetivo de ${workKg} kg${step?' y se redondea hacia abajo al salto disponible':''}. Revisa que la carga sea cómoda y exista en tu gimnasio.`;
+    return result;
+  }
+  function validWarmupGuidance(g){return !!g&&(g.kg===null||Number.isFinite(g.kg)&&g.kg>=0&&g.kg<=2000)&&Number.isInteger(g.reps)&&g.reps>=1&&g.reps<=20&&typeof g.reason==='string'&&g.reason.length<=1200&&(g.sourceId===null||typeof g.sourceId==='string'&&g.sourceId.length<=200)&&(g.sourceDate===null||Number.isFinite(g.sourceDate))&&(g.reference===null||g.reference&&Number.isFinite(g.reference.kg)&&g.reference.kg>=0&&g.reference.kg<=2000&&Number.isInteger(g.reference.reps)&&g.reference.reps>=1&&g.reference.reps<=200);}
   function validGuidance(g){return !!g&&(g.kg===null||Number.isFinite(g.kg)&&g.kg>=0&&g.kg<=2000)&&Array.isArray(g.reps)&&g.reps.length>0&&g.reps.length<=15&&g.reps.every(n=>Number.isInteger(n)&&n>=1&&n<=50)&&typeof g.reason==='string'&&g.reason.length<=1200&&typeof g.status==='string'&&g.status.length<=30&&(g.sourceId===null||typeof g.sourceId==='string'&&g.sourceId.length<=200)&&(g.sourceDate===null||Number.isFinite(g.sourceDate))&&typeof g.adjusted==='boolean';}
-  return {suggest,rirLabels,validGuidance};
+  return {suggest,suggestWarmup,rirLabels,validGuidance,validWarmupGuidance};
 })();

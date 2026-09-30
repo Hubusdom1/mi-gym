@@ -36,21 +36,23 @@ window.GYM_PROFILE = (() => {
     ['laterales-polea','Elevación lateral en polea','Con polea baja y carga ligera, eleva el brazo lateralmente sin impulso. Repite a ambos lados.','Elevaciones laterales con mancuernas'],
     ['flexiones','Flexiones','Con manos apoyadas en el suelo, mantén el cuerpo alineado al bajar y empujar. Apoya las rodillas si lo necesitas y usa un recorrido cómodo.','Press en máquina'],
     ['zancada-estatica','Zancada estática sin carga','Coloca un pie delante del otro, con espacio lateral para equilibrarte. Flexiona ambas rodillas con control y vuelve a subir. Repite a ambos lados.','Sentadilla goblet']
-  ].map(([id,name,cue,alt])=>({id,name,cue,alt,sets:2,min:8,max:12,rest:90,guideId:''}));
+  ].map(([id,name,cue,alt])=>({id,name,cue,alt,sets:3,min:8,max:12,rest:90,guideId:''}));
   const defaults = days => ({version:1,name:'',age:'',height:null,weight:null,goal:'muscle',experience:'beginner',days:Math.max(1,Math.min(6,days||4)),minutes:45,equipment:Object.keys(equipment),avoid:[],updatedAt:0});
   const valid = p => !!p&&p.version===1&&typeof p.name==='string'&&p.name.length<=60&&Number.isInteger(p.age)&&p.age>=18&&p.age<=100&&(p.height===null||Number.isFinite(p.height)&&p.height>=80&&p.height<=250)&&(p.weight===null||Number.isFinite(p.weight)&&p.weight>=25&&p.weight<=400)&&Object.hasOwn(goals,p.goal)&&Object.hasOwn(levels,p.experience)&&Number.isInteger(p.days)&&p.days>=1&&p.days<=6&&[30,45,60,75,90].includes(p.minutes)&&Array.isArray(p.equipment)&&p.equipment.length>0&&p.equipment.every(k=>Object.hasOwn(equipment,k))&&new Set(p.equipment).size===p.equipment.length&&Array.isArray(p.avoid)&&p.avoid.length<=Object.keys(meta).length&&p.avoid.every(id=>Object.hasOwn(meta,id))&&new Set(p.avoid).size===p.avoid.length&&Number.isFinite(p.updatedAt);
   const preferences = p => JSON.stringify([p.goal,p.experience,p.days,p.minutes,[...p.equipment].sort(),[...p.avoid].sort()]);
   const eligible = (e,p) => !p.avoid.includes(e.id)&&(!meta[e.id]||meta[e.id][0].every(k=>p.equipment.includes(k)));
   const unilateral = new Set(['remo-mancuerna','zancada-estatica','laterales-polea']);
   const metadata = e => meta[e.guideId]||meta[e.id];
+  const needsWarmup = e => e.warmupSets===1||!!metadata(e)?.[3];
+  const pattern = e => ({'vertical-pull':'pull',row:'pull',hinge:'posterior',hip:'posterior','knee-flexion':'posterior','knee-extension':'knee',lateral:'shoulder'})[metadata(e)?.[1]]||metadata(e)?.[1];
   // One shared clock for generated, saved and edited routines. No machine queues included.
   function duration(r,cardio=r.cardioMinutes||0) {
     const exercises=r.exercises.filter(e=>e.sets>0),n=exercises.length;
     if(!n)return {warmup:0,preparation:0,work:0,rest:0,setup:0,cardio:0,total:0,minutes:0,low:0,high:0};
-    const mainCount=exercises.filter(e=>metadata(e)?.[3]).length;
-    // General warm-up plus 2 approach sets before the first main lift and 1 before the next.
+    const mainCount=exercises.filter(needsWarmup).length;
+    // General warm-up plus one separate approach set before EVERY main lift.
     // Each approach set reserves 30 s of movement and 60 s of recovery.
-    const warmup=8*60,preparation=(mainCount?2+(mainCount>1?1:0):0)*90,setup=n*120;
+    const warmup=8*60,preparation=mainCount*90,setup=n*120;
     let work=0,workLow=0,workHigh=0,rest=0;
     exercises.forEach((e,i)=>{
       const bothSides=unilateral.has(e.guideId||e.id),sides=bothSides?2:1,switchTime=bothSides?15:0;
@@ -84,40 +86,41 @@ window.GYM_PROFILE = (() => {
         }
         used.add(e.id);e={...e};delete e.slotId;
         const main=meta[e.id]?.[3],adapt=p.experience!=='regular';
-        e.sets=adapt||p.goal==='fitness'?Math.min(2,original.sets):longer?(main?4:3):p.goal==='muscle'&&main?3:original.sets;
+        e.sets=longer&&main?4:Math.max(3,original.sets);
         if(p.goal==='strength'&&main){e.min=adapt?8:5;e.max=adapt?10:8;e.rest=adapt?120:180;}
         else if(main){e.min=8;e.max=12;e.rest=120;}
         else {e.min=10;e.max=e.id.includes('gemelos')?20:15;e.rest=75;}
         return [e];
       });
-      const out={...r,exercises,cardioMinutes:cardio};
+      exercises.sort((a,b)=>Number(!!metadata(b)?.[3])-Number(!!metadata(a)?.[3]));
+      const out={...r,exercises,cardioMinutes:cardio},required=r.required||[];
       // Budget the upper estimate. Never speed up reps or shorten recovery to fit a clock.
       let trimmed=false;
-      while(duration(out).high>p.minutes&&exercises.some(e=>e.sets>1)){
-        const candidates=exercises.map((e,i)=>({e,i})).filter(x=>x.e.sets>1).sort((a,b)=>b.e.sets-a.e.sets||Number(metadata(a.e)?.[3])-Number(metadata(b.e)?.[3])||b.i-a.i);
+      while(duration(out).high>p.minutes&&exercises.some(e=>e.sets>3)){
+        const candidates=exercises.map((e,i)=>({e,i})).filter(x=>x.e.sets>3).sort((a,b)=>b.e.sets-a.e.sets||Number(metadata(a.e)?.[3])-Number(metadata(b.e)?.[3])||b.i-a.i);
         candidates[0].e.sets--;trimmed=true;
       }
       if(duration(out).high>p.minutes&&out.cardioMinutes){out.cardioMinutes=0;changes.add(`Se omite la actividad final opcional en ${r.name} para respetar el tiempo disponible.`);}
       while(duration(out).high>p.minutes){
-        const i=exercises.findLastIndex(e=>!metadata(e)?.[3]);if(i<0)break;
-        const [removed]=exercises.splice(i,1);changes.add(`Se omite ${removed.name} en ${r.name} para que quepa la sesión; se conservan los movimientos principales.`);
+        const canRemove=e=>!required.includes(pattern(e))||exercises.filter(x=>pattern(x)===pattern(e)).length>1;
+        let i=exercises.findLastIndex(e=>!metadata(e)?.[3]&&canRemove(e));if(i<0)i=exercises.findLastIndex(canRemove);if(i<0)break;
+        const [removed]=exercises.splice(i,1);changes.add(`Se omite ${removed.name} en ${r.name} para que quepa la sesión; se conservan los grupos de este día y al menos 3 series por ejercicio.`);
       }
-      if(trimmed)changes.add(`Menos series en ${r.name} para incluir calentamiento y descansos dentro de ${p.minutes} minutos.`);
+      if(trimmed)changes.add(`Se ajustan las series extra en ${r.name} para incluir calentamiento y descansos dentro de ${p.minutes} minutos.`);
       if(longer&&exercises.some(e=>e.sets>3))changes.add(`Se amplían las series principales de ${r.name} por tu experiencia y disponibilidad.`);
+      const absent=required.filter(key=>!exercises.some(e=>pattern(e)===key));
+      if(absent.length)errors.push(`${r.name}: faltan ejercicios para mantener sus grupos musculares. Revisa el material o las exclusiones.`);
       out.estimatedMinutes=duration(out).minutes;
       if(!exercises.length)errors.push(`${r.name} se queda sin ejercicios. Revisa el material o los ejercicios excluidos.`);
-      if(duration(out).high>p.minutes)errors.push(`${r.name} puede necesitar hasta ${duration(out).high} minutos con sus movimientos principales. Elige más tiempo o revisa el material.`);
+      if(duration(out).high>p.minutes)errors.push(`${r.name} puede necesitar hasta ${duration(out).high} minutos con al menos 3 series por ejercicio y sus aproximaciones. Elige más tiempo o revisa el material.`);
       return out;
     });
     const patterns=new Set(routines.flatMap(r=>r.exercises.map(e=>meta[e.id]?.[1])));
     const missing=[['chest','pecho'],['row','espalda'],['knee','piernas'],['hinge','cadera y cadena posterior']].filter(([key])=>key==='row'?!patterns.has('row')&&!patterns.has('vertical-pull'):key==='hinge'?!patterns.has('hinge')&&!patterns.has('hip'):!patterns.has(key)).map(([,label])=>label);
     if(missing.length)errors.push(`Con estas opciones faltan ejercicios de ${missing.join(', ')}. Añade material o revisa las exclusiones para crear una propuesta completa.`);
     const durationNotes=[];
-    if(routines.some(r=>duration(r).high<p.minutes-10))durationNotes.push(p.experience!=='regular'?
-      `Dispones de ${p.minutes} minutos. La propuesta es más corta porque al empezar o volver se limita a un máximo de 2 series por ejercicio.`:
-      p.goal==='fitness'?`Dispones de ${p.minutes} minutos. Para estar en forma se mantiene un volumen moderado aunque quede tiempo libre.`:
-      `Dispones de ${p.minutes} minutos. El tiempo que sobra queda libre: el volumen también depende de tu objetivo y de cómo se reparte la semana.`);
+    if(routines.some(r=>duration(r).high<p.minutes-10))durationNotes.push(`Dispones de ${p.minutes} minutos. Se mantienen al menos 3 series por ejercicio; el tiempo sobrante queda libre y no obliga a añadir volumen.`);
     return {routines,changes:[...changes],errors:[...new Set(errors)],cardio,durationNotes};
   }
-  return {goals,levels,equipment,meta,extra,defaults,valid,preferences,eligible,duration,minutesFor,generate};
+  return {goals,levels,equipment,meta,extra,defaults,valid,preferences,eligible,needsWarmup,pattern,duration,minutesFor,generate};
 })();

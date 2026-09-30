@@ -17,7 +17,7 @@ Las rutas de recursos son relativas y admiten una subcarpeta como /mi-gym/. No s
 
 Desde **Días y rutina**, elige tu disponibilidad y revisa las sesiones antes de aplicar. Cambian la distribución, los ejercicios, las series y los días planificados. Puedes mover los días respetando la recuperación.
 
-Al empezar, puedes elegir Adaptación para hacer hasta dos series por ejercicio, o Series del plan. En esos modos los pesos empiezan vacíos. **Preparar con mi historial** permite revisar y aceptar objetivos de carga antes de comenzar. Las repeticiones realizadas siempre empiezan vacías; las marcas anteriores son referencias. Marca cada serie completada. Terminar guarda solo las series marcadas.
+Las nuevas sesiones tienen al menos tres series de trabajo por ejercicio, también al empezar o volver a entrenar. **Series del plan** empieza con los pesos vacíos. **Preparar con mi historial** permite revisar y aceptar objetivos de carga antes de comenzar. Los ejercicios principales incluyen además una aproximación separada, con su propio peso y repeticiones. Las repeticiones realizadas siempre empiezan vacías; las marcas anteriores son referencias. Marca cada serie completada. Las métricas cuentan solo las series de trabajo marcadas.
 
 Mancuernas: kg de una mancuerna. Barra: kg totales, incluida la barra. Máquina: carga indicada. No compares distintas máquinas solo por los kg de sus placas.
 
@@ -61,9 +61,9 @@ La clave de almacenamiento sin cuenta sigue siendo `mi-gym-v1`. Cada cuenta util
 | --- | --- |
 | 1 | Cuerpo completo, para disponibilidad limitada |
 | 2 | Cuerpo completo A/B |
-| 3 | Cuerpo completo A/B/C en días alternos |
-| 4 | Torso/Pierna A/B |
-| 5 | Torso, Pierna, Empuje, Tirón, Pierna |
+| 3 | Pecho y tríceps / Espalda y bíceps / Pierna y hombro |
+| 4 | Torso / Pierna dos veces |
+| 5 | Pecho y tríceps / Espalda y bíceps / Pierna y hombro / Torso / Pierna |
 | 6 | Empuje, Tirón y Pierna dos veces |
 
 Las plantillas de `training-plans.js` especifican sesiones y series reales. No se recorta un plan fijo ni se cambia solo el contador. La vista previa enumera días, ejercicios y series, con descansos programados. Son planes generales editables elaborados para la app, no planes personalizados por IA ni una prescripción específica de ACSM. Se apoyan en el principio general de repartir el trabajo de los principales grupos musculares y ajustar la frecuencia a disponibilidad y recuperación. Más días no significan automáticamente más volumen ni mejores resultados.
@@ -81,7 +81,7 @@ El nombre, la altura y el peso son opcionales. La edad sirve para limitar estas 
 `profile-engine.js` adapta las plantillas reales de 1–6 días:
 
 - **Objetivo:** fuerza cambia repeticiones y descansos de los principales; músculo prioriza series; estar en forma limita el volumen; perder grasa mantiene fuerza y propone 8 minutos opcionales de actividad suave. La app no promete pérdida de peso ni registra ese cardio como series de fuerza.
-- **Experiencia:** empezar o volver limita las series iniciales; el usuario puede ajustar la rutina o actualizar su nivel más adelante. No se aumenta el volumen automáticamente por el mero paso del tiempo.
+- **Experiencia:** todas las propuestas parten de al menos tres series de trabajo. El nivel sigue interviniendo en los rangos, descansos y series adicionales; empezar o volver no activa un modo de dos series. No se aumenta el volumen automáticamente por el mero paso del tiempo.
 - **Tiempo:** se calcula a partir de los ejercicios, repeticiones, series, ambos lados cuando corresponde, descansos entre series y ejercicios, calentamiento, aproximaciones y preparación de material. Se muestra un rango. El plan se ajusta al límite elegido y explica cuándo queda más corto por el nivel o el objetivo. Es una estimación, no una garantía de duración.
 - **Material:** máquinas, poleas, mancuernas, barras/discos y bancos. Las sustituciones se buscan en un catálogo cerrado. La vista previa detalla los cambios y omisiones; si faltan patrones básicos o una sesión queda vacía, impide aplicar la propuesta y pide revisar las opciones. Elegir material limitado dentro del gimnasio no cambia el enfoque de la app a entrenamiento en casa.
 - **Exclusiones:** los ejercicios marcados se excluyen de las propuestas y del catálogo filtrado. Son preferencias concretas, no una evaluación de lesiones. Una máquina ocupada se gestiona con el cambio temporal de ejercicio durante la sesión.
@@ -111,7 +111,7 @@ Con una referencia comparable, si falta el esfuerzo de la última serie o alguna
 
 Los plazos, el número de sesiones y el límite del 10 % son decisiones conservadoras del producto; no son una prescripción clínica ni una recomendación individual validada. El usuario revisa siempre la propuesta. La app no decide cargas a partir del peso corporal, altura o edad.
 
-La clave de datos sigue siendo `mi-gym-v1`: las instalaciones y copias anteriores no necesitan esfuerzo anotado para abrirse. El guardado conserva la sesión en curso y revierte el cambio si falla el almacenamiento. La caché de recursos actual es `mi-gym-shell-v9-duration`.
+La clave de datos sigue siendo `mi-gym-v1`: las instalaciones y copias anteriores no necesitan esfuerzo anotado para abrirse. El guardado conserva la sesión en curso y revierte el cambio si falla el almacenamiento. La caché de recursos actual es `mi-gym-shell-v10-splits-warmups`.
 
 Pruebas: `tests/progression.test.cjs` verifica las decisiones a partir del historial, límites y casos incompletos, revisión/cancelación/edición, saltos de carga, copia de series, esfuerzo y su invalidación, importación, errores de almacenamiento y conservación de sesiones y sustituciones. También se ejecutan las pruebas existentes de registro, frecuencia y perfil. Se comprueban lógica e interacción DOM; queda pendiente una revisión visual en un iPhone real.
 
@@ -167,7 +167,7 @@ Se usa un único cálculo para la propuesta, Entrenar y los días guardados en R
 El desglose separa:
 
 - 8 minutos de calentamiento general; el rango usa 6–10.
-- Aproximación: 2 series antes del primer ejercicio principal y 1 antes del siguiente. Para estimar, cada una reserva 30 segundos de movimiento y 60 de recuperación.
+- Aproximación: desde la versión 10 se incluye una antes de cada ejercicio principal. Para estimar, cada una reserva 30 segundos de movimiento y 60 de recuperación.
 - Series de trabajo: promedio del rango de repeticiones a 3 segundos por repetición. Remo con mancuerna, lateral en polea y zancada estática cuentan ambos lados y 15 segundos de cambio.
 - Descansos: después de las series y antes de cambiar de ejercicio, sin añadir descanso después de la última serie de toda la sesión.
 - Preparación del material: 2 minutos por ejercicio; el rango usa 1,5–2,5.
@@ -175,8 +175,22 @@ El desglose separa:
 
 Son supuestos de planificación de esta app, no duraciones medidas, intervalos estadísticos ni una pauta médica individual. Las colas por máquinas no se estiman. El total y cada componente se calculan en segundos, y la vista muestra un rango de minutos. La adaptación usa el extremo superior del rango para reservar margen dentro del tiempo disponible.
 
-Al empezar o volver se conserva el máximo de 2 series por ejercicio y se explica por qué sobra tiempo. Para usuarios regulares cuyo objetivo es ganar músculo, 75–90 minutos permiten proponer hasta 4 series en los principales y 3 en los complementarios, dentro del presupuesto. Es una propuesta revisable que solo se aplica al confirmarla. Con poco tiempo se reducen series, se omite el final opcional si hace falta y después complementarios; si los principales no caben, la app pide más tiempo, en vez de mostrar una duración incompatible con el plan.
+Desde la versión 10, se conservan al menos 3 series de trabajo por ejercicio en todos los niveles. Para usuarios regulares cuyo objetivo es ganar músculo, 75–90 minutos permiten proponer hasta 4 series en los principales y 3 en los complementarios, dentro del presupuesto. Es una propuesta revisable que solo se aplica al confirmarla. Con poco tiempo se reducen las series adicionales, se omite el final opcional si hace falta y se retiran ejercicios repetidos o accesorios que no eliminen un grupo requerido de ese día. Si el mínimo no cabe, la app pide más tiempo.
 
-Ejemplo de la plantilla de 4 días, gimnasio completo y nivel inicial con 90 minutos disponibles: Torso A 44–56 min, Pierna A 42–56 min, Torso B 50–64 min y Pierna B 42–56 min. El nivel regular y objetivo de músculo puede proponer más series; no se fuerza una sesión de 90 minutos exactos.
+La duración se recalcula con la nueva distribución, las series de trabajo y todas las aproximaciones. El nivel regular y objetivo de músculo puede proponer más series; no se fuerza una sesión de 90 minutos exactos.
 
-`tests/duration.test.cjs` comprueba cálculos conocidos, efecto de repeticiones/descansos/series/unilaterales, selección y conservación de 90 minutos desde ambas pantallas, cancelación, cambios de días, recarga, bloqueo si no cabe y actualización después de editar ejercicios. También comprueba la conservación de sesión activa, historial, notas y temporizador, y la reversión conjunta si falla el almacenamiento. Las 1.080 combinaciones de preferencias verifican propuestas válidas o un bloqueo explícito de las combinaciones de 30 minutos que no caben. Se mantienen las pruebas de cuentas y sincronización.
+`tests/duration.test.cjs` comprueba cálculos conocidos, efecto de repeticiones/descansos/series/unilaterales, selección y conservación de 90 minutos desde ambas pantallas, cancelación, cambios de días, recarga, bloqueo si no cabe y actualización después de editar ejercicios. También comprueba la conservación de sesión activa, historial, notas y temporizador, y la reversión conjunta si falla el almacenamiento. Las 1.080 combinaciones de preferencias verifican propuestas válidas o un bloqueo explícito cuando falta tiempo o material para mantener los grupos requeridos. Se mantienen las pruebas de cuentas y sincronización.
+
+## Distribución y aproximaciones (versión 10)
+
+Las plantillas de tres días separan pecho/tríceps, espalda/bíceps y pierna/hombro. Las de cuatro, cinco y seis reparten los grupos principales en dos días distintos de la semana. Los ejercicios principales aparecen antes que los accesorios; el ajuste de tiempo conserva los grupos necesarios de cada sesión.
+
+Cada ejercicio principal tiene **una aproximación y al menos tres series de trabajo**. La aproximación se registra en una fila «A», con peso, repeticiones y marca de completada independientes. Su descanso es de 60 segundos y se incluye en la duración estimada. Se conserva en la sesión activa, el historial, las copias y la sincronización de la cuenta, pero no suma series de trabajo, volumen ni récords. En el editor puede activarse también para un ejercicio personalizado.
+
+**Preparar con mi historial** muestra tanto el objetivo de trabajo como la referencia de aproximación. Las decisiones de subir repeticiones o peso de trabajo siguen dependiendo de las series efectivas y el margen anotado. Para la aproximación se usa el peso y las repeticiones que realmente registraste y, si hay una referencia comparable, la proporción entre esa carga y la primera serie de trabajo anterior. Al editar la carga de trabajo propuesta se actualiza la aproximación. Si indicas el salto disponible, se redondea hacia abajo a ese salto.
+
+La carga propuesta de aproximación queda vacía si faltan datos, la sesión tiene más de 21 días, hubo una sustitución, hay registros duplicados o la carga anterior de aproximación supera el 70 % de la primera serie de trabajo. Se muestra la referencia para revisarla; no se inventa un peso a partir de edad, altura o peso corporal. El límite del 70 % y el plazo son reglas del producto. El peso y las repeticiones reales de aproximación empiezan vacíos aunque se acepte la propuesta: deben registrarse al hacerla.
+
+Para adoptar la nueva distribución en una instalación existente, abre **Días y rutina**, revisa y aplica la propuesta. Las rutinas futuras antiguas con menos de tres series pasan al mínimo; los entrenamientos guardados y una sesión ya iniciada conservan sus datos reales. Recuperar un plan anterior aplica el mínimo a su copia para entrenamientos futuros. Al sustituir un ejercicio parcialmente completado se conservan las series y la aproximación realizadas y solo se sustituye el trabajo pendiente.
+
+`tests/warmup.test.cjs` comprueba las distribuciones de 1–6 días y tres niveles, frecuencia de los grupos, mínimos, orden, duración, registro y recarga de aproximaciones, propuestas a partir de datos reales, edición de cargas, redondeo, datos incompletos, separación de récords, sustituciones y reversión si falla el almacenamiento. Las siete suites de pruebas cubren también el registro anterior, los perfiles, la progresión y la sincronización; no sustituyen una revisión visual en un iPhone real.
