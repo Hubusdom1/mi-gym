@@ -1,5 +1,5 @@
 'use strict';
-// Local, deterministic templates. No remote service receives profile information.
+// Deterministic plan rules; duration assumptions are estimates, not measured workout times.
 window.GYM_PROFILE = (() => {
   const goals = {muscle:'Ganar músculo',strength:'Ganar fuerza',fatloss:'Perder grasa',fitness:'Estar en forma'};
   const levels = {beginner:'Estoy empezando',returning:'Vuelvo después de un tiempo',regular:'Entreno con regularidad'};
@@ -41,12 +41,37 @@ window.GYM_PROFILE = (() => {
   const valid = p => !!p&&p.version===1&&typeof p.name==='string'&&p.name.length<=60&&Number.isInteger(p.age)&&p.age>=18&&p.age<=100&&(p.height===null||Number.isFinite(p.height)&&p.height>=80&&p.height<=250)&&(p.weight===null||Number.isFinite(p.weight)&&p.weight>=25&&p.weight<=400)&&Object.hasOwn(goals,p.goal)&&Object.hasOwn(levels,p.experience)&&Number.isInteger(p.days)&&p.days>=1&&p.days<=6&&[30,45,60,75,90].includes(p.minutes)&&Array.isArray(p.equipment)&&p.equipment.length>0&&p.equipment.every(k=>Object.hasOwn(equipment,k))&&new Set(p.equipment).size===p.equipment.length&&Array.isArray(p.avoid)&&p.avoid.length<=Object.keys(meta).length&&p.avoid.every(id=>Object.hasOwn(meta,id))&&new Set(p.avoid).size===p.avoid.length&&Number.isFinite(p.updatedAt);
   const preferences = p => JSON.stringify([p.goal,p.experience,p.days,p.minutes,[...p.equipment].sort(),[...p.avoid].sort()]);
   const eligible = (e,p) => !p.avoid.includes(e.id)&&(!meta[e.id]||meta[e.id][0].every(k=>p.equipment.includes(k)));
-  const minutesFor = (r,cardio=0) => 6+cardio+r.exercises.reduce((n,e)=>n+1.5+e.sets*(e.id==='remo-mancuerna'||e.id==='zancada-estatica'||e.id==='laterales-polea'?80:40)/60+Math.max(0,e.sets-1)*e.rest/60,0);
+  const unilateral = new Set(['remo-mancuerna','zancada-estatica','laterales-polea']);
+  const metadata = e => meta[e.guideId]||meta[e.id];
+  // One shared clock for generated, saved and edited routines. No machine queues included.
+  function duration(r,cardio=r.cardioMinutes||0) {
+    const exercises=r.exercises.filter(e=>e.sets>0),n=exercises.length;
+    if(!n)return {warmup:0,preparation:0,work:0,rest:0,setup:0,cardio:0,total:0,minutes:0,low:0,high:0};
+    const mainCount=exercises.filter(e=>metadata(e)?.[3]).length;
+    // General warm-up plus 2 approach sets before the first main lift and 1 before the next.
+    // Each approach set reserves 30 s of movement and 60 s of recovery.
+    const warmup=8*60,preparation=(mainCount?2+(mainCount>1?1:0):0)*90,setup=n*120;
+    let work=0,workLow=0,workHigh=0,rest=0;
+    exercises.forEach((e,i)=>{
+      const bothSides=unilateral.has(e.guideId||e.id),sides=bothSides?2:1,switchTime=bothSides?15:0;
+      work+=e.sets*((e.min+e.max)/2*3*sides+switchTime);
+      workLow+=e.sets*(e.min*3*sides+switchTime);
+      workHigh+=e.sets*(e.max*3*sides+switchTime);
+      // Rest after each set except the very last of the session; changing machines is separate.
+      rest+=(e.sets-(i===n-1?1:0))*e.rest;
+    });
+    const extra=cardio*60,total=warmup+preparation+work+rest+setup+extra;
+    return {warmup,preparation,work,rest,setup,cardio:extra,total,minutes:Math.ceil(total/60),
+      low:Math.ceil((6*60+preparation+workLow+rest+n*90+extra)/60),
+      high:Math.ceil((10*60+preparation+workHigh+rest+n*150+extra)/60)};
+  }
+  const minutesFor = (r,cardio=r.cardioMinutes||0) => duration(r,cardio).total/60;
   function generate(p,base,catalog) {
     if(!valid(p))return {routines:[],changes:[],errors:['Revisa los datos del perfil.']};
     const all=[...catalog,...extra],changes=new Set(),errors=[];
     const replacements={chest:['press-maquina','press-inclinado','press-suelo','flexiones'],row:['remo-apoyado','remo-polea','remo-mancuerna','remo-barra'],'vertical-pull':['jalon','remo-apoyado','remo-polea','remo-mancuerna','remo-barra'],knee:['prensa','goblet','zancada-estatica'],hinge:['rumano','rumano-barra','pull-through','hip-thrust','puente-gluteos'],hip:['hip-thrust','puente-gluteos','rumano','rumano-barra','pull-through'],shoulder:['hombro','press-hombro-mancuerna'],lateral:['laterales','laterales-polea'],biceps:['curl','curl-polea'],triceps:['triceps','triceps-mancuerna'],calf:['gemelos','gemelos-mancuerna'],core:['crunch','crunch-suelo']};
     const cardio=p.goal==='fatloss'?8:0;
+    const longer=p.experience==='regular'&&p.goal==='muscle'&&p.minutes>=75;
     const routines=base.map(r=>{
       const used=new Set();
       const exercises=r.exercises.flatMap(original=>{
@@ -59,29 +84,40 @@ window.GYM_PROFILE = (() => {
         }
         used.add(e.id);e={...e};delete e.slotId;
         const main=meta[e.id]?.[3],adapt=p.experience!=='regular';
-        e.sets=adapt||p.goal==='fitness'?Math.min(2,original.sets):p.goal==='muscle'&&main?3:original.sets;
+        e.sets=adapt||p.goal==='fitness'?Math.min(2,original.sets):longer?(main?4:3):p.goal==='muscle'&&main?3:original.sets;
         if(p.goal==='strength'&&main){e.min=adapt?8:5;e.max=adapt?10:8;e.rest=adapt?120:180;}
         else if(main){e.min=8;e.max=12;e.rest=120;}
         else {e.min=10;e.max=e.id.includes('gemelos')?20:15;e.rest=75;}
         return [e];
       });
       const out={...r,exercises,cardioMinutes:cardio};
-      // Keep movement coverage and rest intervals. Short sessions reduce sets first.
+      // Budget the upper estimate. Never speed up reps or shorten recovery to fit a clock.
       let trimmed=false;
-      while(minutesFor(out,cardio)>p.minutes&&exercises.some(e=>e.sets>1)){
-        const candidates=exercises.map((e,i)=>({e,i})).filter(x=>x.e.sets>1).sort((a,b)=>b.e.sets-a.e.sets||Number(meta[a.e.id]?.[3])-Number(meta[b.e.id]?.[3])||b.i-a.i);
+      while(duration(out).high>p.minutes&&exercises.some(e=>e.sets>1)){
+        const candidates=exercises.map((e,i)=>({e,i})).filter(x=>x.e.sets>1).sort((a,b)=>b.e.sets-a.e.sets||Number(metadata(a.e)?.[3])-Number(metadata(b.e)?.[3])||b.i-a.i);
         candidates[0].e.sets--;trimmed=true;
       }
-      if(trimmed)changes.add(`Menos series en ${r.name} para acercar la sesión a ${p.minutes} minutos.`);
-      out.estimatedMinutes=Math.ceil(minutesFor(out,cardio));
+      if(duration(out).high>p.minutes&&out.cardioMinutes){out.cardioMinutes=0;changes.add(`Se omite la actividad final opcional en ${r.name} para respetar el tiempo disponible.`);}
+      while(duration(out).high>p.minutes){
+        const i=exercises.findLastIndex(e=>!metadata(e)?.[3]);if(i<0)break;
+        const [removed]=exercises.splice(i,1);changes.add(`Se omite ${removed.name} en ${r.name} para que quepa la sesión; se conservan los movimientos principales.`);
+      }
+      if(trimmed)changes.add(`Menos series en ${r.name} para incluir calentamiento y descansos dentro de ${p.minutes} minutos.`);
+      if(longer&&exercises.some(e=>e.sets>3))changes.add(`Se amplían las series principales de ${r.name} por tu experiencia y disponibilidad.`);
+      out.estimatedMinutes=duration(out).minutes;
       if(!exercises.length)errors.push(`${r.name} se queda sin ejercicios. Revisa el material o los ejercicios excluidos.`);
-      if(out.estimatedMinutes>p.minutes)errors.push(`${r.name} necesita aproximadamente ${out.estimatedMinutes} minutos. Elige más tiempo.`);
+      if(duration(out).high>p.minutes)errors.push(`${r.name} puede necesitar hasta ${duration(out).high} minutos con sus movimientos principales. Elige más tiempo o revisa el material.`);
       return out;
     });
     const patterns=new Set(routines.flatMap(r=>r.exercises.map(e=>meta[e.id]?.[1])));
     const missing=[['chest','pecho'],['row','espalda'],['knee','piernas'],['hinge','cadera y cadena posterior']].filter(([key])=>key==='row'?!patterns.has('row')&&!patterns.has('vertical-pull'):key==='hinge'?!patterns.has('hinge')&&!patterns.has('hip'):!patterns.has(key)).map(([,label])=>label);
     if(missing.length)errors.push(`Con estas opciones faltan ejercicios de ${missing.join(', ')}. Añade material o revisa las exclusiones para crear una propuesta completa.`);
-    return {routines,changes:[...changes],errors:[...new Set(errors)],cardio};
+    const durationNotes=[];
+    if(routines.some(r=>duration(r).high<p.minutes-10))durationNotes.push(p.experience!=='regular'?
+      `Dispones de ${p.minutes} minutos. La propuesta es más corta porque al empezar o volver se limita a un máximo de 2 series por ejercicio.`:
+      p.goal==='fitness'?`Dispones de ${p.minutes} minutos. Para estar en forma se mantiene un volumen moderado aunque quede tiempo libre.`:
+      `Dispones de ${p.minutes} minutos. El tiempo que sobra queda libre: el volumen también depende de tu objetivo y de cómo se reparte la semana.`);
+    return {routines,changes:[...changes],errors:[...new Set(errors)],cardio,durationNotes};
   }
-  return {goals,levels,equipment,meta,extra,defaults,valid,preferences,eligible,minutesFor,generate};
+  return {goals,levels,equipment,meta,extra,defaults,valid,preferences,eligible,duration,minutesFor,generate};
 })();

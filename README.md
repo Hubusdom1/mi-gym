@@ -2,7 +2,7 @@
 
 App de gimnasio con rutinas adaptables, registro de entrenamientos y acceso con cuenta preparado mediante Supabase. Sin cuenta, los datos se guardan en este navegador. Con la conexión activada e inicio de sesión, perfil, rutinas, notas, historial y sesión en curso se guardan en la cuenta y se recuperan en otro dispositivo.
 
-**Estado de esta entrega:** proyecto Supabase `Mi Gym` creado en París (`hsegquwjytlglabjnkjc`) y conexión pública configurada. La migración ya está aplicada: no volver a ejecutarla en este proyecto. Se han probado permisos, guardado con revisiones y aislamiento en la base de datos real, además de las pruebas locales. **Falta configurar las URLs de Auth y el correo antes de probar registro y recuperación completos.** No se han creado cuentas personales ni enviado correos de prueba. La app muestra un aviso mientras `emailSetupPending` sea `true`.
+**Estado de esta entrega:** proyecto Supabase `Mi Gym` creado en París (`hsegquwjytlglabjnkjc`) y conexión pública configurada. La migración ya está aplicada: no volver a ejecutarla en este proyecto. Se han probado permisos, guardado con revisiones y aislamiento en la base de datos real, además de las pruebas locales. **El propietario confirmó el 30-09-2026 que sus datos se guardan en la nube.** La configuración de las URLs fue completada por el propietario. Sigue pendiente preparar el envío de correos para altas de amigos y familiares; no se ha verificado la recuperación de contraseña de extremo a extremo. La app mantiene el aviso de prueba inicial mientras `emailSetupPending` sea `true`.
 
 ## Publicar en GitHub Pages
 
@@ -82,7 +82,7 @@ El nombre, la altura y el peso son opcionales. La edad sirve para limitar estas 
 
 - **Objetivo:** fuerza cambia repeticiones y descansos de los principales; músculo prioriza series; estar en forma limita el volumen; perder grasa mantiene fuerza y propone 8 minutos opcionales de actividad suave. La app no promete pérdida de peso ni registra ese cardio como series de fuerza.
 - **Experiencia:** empezar o volver limita las series iniciales; el usuario puede ajustar la rutina o actualizar su nivel más adelante. No se aumenta el volumen automáticamente por el mero paso del tiempo.
-- **Tiempo:** se estiman calentamiento, transiciones, series, descansos y actividad adicional. Si hace falta, se reducen series sin acortar automáticamente los descansos. Es una estimación, no una garantía de duración.
+- **Tiempo:** se calcula a partir de los ejercicios, repeticiones, series, ambos lados cuando corresponde, descansos entre series y ejercicios, calentamiento, aproximaciones y preparación de material. Se muestra un rango. El plan se ajusta al límite elegido y explica cuándo queda más corto por el nivel o el objetivo. Es una estimación, no una garantía de duración.
 - **Material:** máquinas, poleas, mancuernas, barras/discos y bancos. Las sustituciones se buscan en un catálogo cerrado. La vista previa detalla los cambios y omisiones; si faltan patrones básicos o una sesión queda vacía, impide aplicar la propuesta y pide revisar las opciones. Elegir material limitado dentro del gimnasio no cambia el enfoque de la app a entrenamiento en casa.
 - **Exclusiones:** los ejercicios marcados se excluyen de las propuestas y del catálogo filtrado. Son preferencias concretas, no una evaluación de lesiones. Una máquina ocupada se gestiona con el cambio temporal de ejercicio durante la sesión.
 
@@ -111,7 +111,7 @@ Con una referencia comparable, si falta el esfuerzo de la última serie o alguna
 
 Los plazos, el número de sesiones y el límite del 10 % son decisiones conservadoras del producto; no son una prescripción clínica ni una recomendación individual validada. El usuario revisa siempre la propuesta. La app no decide cargas a partir del peso corporal, altura o edad.
 
-La clave de datos sigue siendo `mi-gym-v1`: las instalaciones y copias anteriores no necesitan esfuerzo anotado para abrirse. El guardado conserva la sesión en curso y revierte el cambio si falla el almacenamiento. La caché de recursos actual es `mi-gym-shell-v8-supabase`.
+La clave de datos sigue siendo `mi-gym-v1`: las instalaciones y copias anteriores no necesitan esfuerzo anotado para abrirse. El guardado conserva la sesión en curso y revierte el cambio si falla el almacenamiento. La caché de recursos actual es `mi-gym-shell-v9-duration`.
 
 Pruebas: `tests/progression.test.cjs` verifica las decisiones a partir del historial, límites y casos incompletos, revisión/cancelación/edición, saltos de carga, copia de series, esfuerzo y su invalidación, importación, errores de almacenamiento y conservación de sesiones y sustituciones. También se ejecutan las pruebas existentes de registro, frecuencia y perfil. Se comprueban lógica e interacción DOM; queda pendiente una revisión visual en un iPhone real.
 
@@ -156,3 +156,27 @@ Guardar los cambios. Para una versión en GitHub Pages, añadir también su dire
 El envío de correos por defecto permite probar con el correo del propietario de Supabase; amigos y familiares necesitan un proveedor SMTP configurado. Después de configurar las URLs, el propietario puede crear su cuenta desde la app, confirmar el correo y elegir si migra sus datos locales. La contraseña se introduce exclusivamente en la app. Verificar **Guardado en la nube** y después iniciar sesión en un segundo dispositivo con la misma cuenta.
 
 El 29-09-2026, Supabase indicó coste de creación de este proyecto de 0 al mes. No se ha contratado un plan de pago ni un proveedor de correo. Este dato no garantiza costes futuros si se cambian el plan o los servicios.
+
+
+## Duración de las rutinas (versión 9)
+
+**Días y rutina** permite cambiar los días y el tiempo disponible de 30 a 90 minutos en la misma pantalla. La vista previa utiliza ambos valores. Al aplicar se guardan conjuntamente en el perfil y el plan; cancelar no los modifica. Los 90 minutos son la disponibilidad, no una duración impuesta.
+
+Se usa un único cálculo para la propuesta, Entrenar y los días guardados en Rutina. El dato se recalcula con los ejercicios actuales, incluso al editar las series, repeticiones o descansos de una rutina anterior. Los antiguos valores `estimatedMinutes` no determinan la duración mostrada ni la identidad del plan. No se reescriben los entrenamientos al abrir la actualización.
+
+El desglose separa:
+
+- 8 minutos de calentamiento general; el rango usa 6–10.
+- Aproximación: 2 series antes del primer ejercicio principal y 1 antes del siguiente. Para estimar, cada una reserva 30 segundos de movimiento y 60 de recuperación.
+- Series de trabajo: promedio del rango de repeticiones a 3 segundos por repetición. Remo con mancuerna, lateral en polea y zancada estática cuentan ambos lados y 15 segundos de cambio.
+- Descansos: después de las series y antes de cambiar de ejercicio, sin añadir descanso después de la última serie de toda la sesión.
+- Preparación del material: 2 minutos por ejercicio; el rango usa 1,5–2,5.
+- Actividad final opcional, si la propuesta la incluye.
+
+Son supuestos de planificación de esta app, no duraciones medidas, intervalos estadísticos ni una pauta médica individual. Las colas por máquinas no se estiman. El total y cada componente se calculan en segundos, y la vista muestra un rango de minutos. La adaptación usa el extremo superior del rango para reservar margen dentro del tiempo disponible.
+
+Al empezar o volver se conserva el máximo de 2 series por ejercicio y se explica por qué sobra tiempo. Para usuarios regulares cuyo objetivo es ganar músculo, 75–90 minutos permiten proponer hasta 4 series en los principales y 3 en los complementarios, dentro del presupuesto. Es una propuesta revisable que solo se aplica al confirmarla. Con poco tiempo se reducen series, se omite el final opcional si hace falta y después complementarios; si los principales no caben, la app pide más tiempo, en vez de mostrar una duración incompatible con el plan.
+
+Ejemplo de la plantilla de 4 días, gimnasio completo y nivel inicial con 90 minutos disponibles: Torso A 44–56 min, Pierna A 42–56 min, Torso B 50–64 min y Pierna B 42–56 min. El nivel regular y objetivo de músculo puede proponer más series; no se fuerza una sesión de 90 minutos exactos.
+
+`tests/duration.test.cjs` comprueba cálculos conocidos, efecto de repeticiones/descansos/series/unilaterales, selección y conservación de 90 minutos desde ambas pantallas, cancelación, cambios de días, recarga, bloqueo si no cabe y actualización después de editar ejercicios. También comprueba la conservación de sesión activa, historial, notas y temporizador, y la reversión conjunta si falla el almacenamiento. Las 1.080 combinaciones de preferencias verifican propuestas válidas o un bloqueo explícito de las combinaciones de 30 minutos que no caben. Se mantienen las pruebas de cuentas y sincronización.

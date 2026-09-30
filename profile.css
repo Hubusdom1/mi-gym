@@ -70,3 +70,13 @@
  #profile-form .plan-preview-days li{flex-direction:column;gap:3px}
  .profile-data>div{gap:12px}
 }
+
+.duration-breakdown{margin:16px 0 8px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+.duration-breakdown dl{margin:10px 0;font-size:14px}
+.duration-breakdown dl>div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;padding:8px 0}
+.duration-breakdown dd{margin:0;white-space:nowrap;font-variant-numeric:tabular-nums}
+.duration-breakdown .duration-total{border-top:1px solid var(--line);font-weight:700}
+.duration-breakdown .note{font-size:14px;margin-top:12px}
+.routine-duration{margin:14px 0}
+.routine-duration>summary{font-size:14px;cursor:pointer;color:var(--muted)}
+#goal-minutes{margin-bottom:8px}
