@@ -1,0 +1,48 @@
+/* Optional effort feedback and reviewable goals, with phone-sized controls. */
+.hero-proposal{display:block;width:100%;margin-top:12px;padding:14px 18px;border:1px solid #68776d;border-radius:12px;background:#283c2c;color:#e1f3bc;font-size:15px;line-height:1.4;min-height:48px;text-align:left}
+.hero-proposal:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+.effort-box{margin:18px 0;padding:16px;background:#f4f7ee;border:1px solid #dce5ce;border-radius:13px}
+.effort-box label{margin:0 0 12px}
+.effort-box strong{display:block;font-size:15px}
+.effort-box label span{display:block;color:var(--muted);font-size:14px;margin-top:4px}
+.effort-box select{min-height:48px;font-size:16px;background:white}
+.effort-box p{margin-top:9px}
+.session-guidance{margin:16px 0;padding:16px;background:#eef5df;border:1px solid #d8e5be;border-radius:13px}
+.session-guidance .eyebrow{font-size:11px;letter-spacing:1px;color:#4c682b;margin-bottom:6px}
+.session-guidance>strong{display:block;font-size:19px;overflow-wrap:anywhere}
+.session-guidance>p.small{color:#526540;margin-top:5px}
+.session-guidance details{margin-top:9px;font-size:13px;color:#526540}
+.session-guidance summary{cursor:pointer;min-height:32px;padding:6px 0}
+.session-guidance details p{margin-top:5px}
+.history-effort{font-size:13px;color:#4d652d;margin:5px 0 13px}
+.suggestion-dialog{max-width:760px;width:calc(100% - 28px);padding:28px}
+.suggestion-title h2{font-size:28px;letter-spacing:-.6px;margin:7px 0 0;overflow-wrap:anywhere}
+.suggestion-title .note{margin:12px 0 24px}
+.suggestions{display:grid;gap:18px}
+.suggestion-card{border:1px solid var(--line);border-radius:17px;padding:20px;background:#fbfcfa;min-width:0}
+.suggestion-heading{display:flex;gap:12px;align-items:center;margin-bottom:14px}
+.suggestion-heading img{flex:0 0 48px;object-fit:contain;border-radius:9px;background:#edf1ed}
+.suggestion-heading h3{font-size:18px;line-height:1.3;margin:0 0 4px;overflow-wrap:anywhere}
+.suggestion-status{display:inline-block;padding:5px 9px;background:#e9edef;color:#465761;border-radius:7px;font-size:12px;font-weight:700}
+.suggestion-status.progress{background:#e2efc7;color:#3f6018}
+.suggestion-reason{font-size:14px;line-height:1.6;margin:12px 0;color:#465761}
+.suggestion-reference{font-size:13px;padding:10px 12px;border-radius:9px;background:#edf0e9;color:#526344;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.suggestion-use{display:flex;align-items:center;gap:10px;font-size:14px;margin:16px 0;min-height:44px;cursor:pointer}
+.suggestion-use input{appearance:auto;flex:0 0 21px;width:21px;height:21px;margin:0;padding:0;accent-color:#476d12}
+.suggestion-fields{display:grid;grid-template-columns:minmax(135px,1fr) minmax(0,2fr);gap:20px}
+.suggestion-fields>div>label,.suggestion-fields legend,.load-step>label{font-size:13px;font-weight:650;margin:0 0 8px}
+.suggestion-fields input,.load-step input{min-width:0;width:100%;min-height:48px;font-size:16px;background:white;font-variant-numeric:tabular-nums}
+.suggestion-fields input:focus-visible,.load-step input:focus-visible,.effort-box select:focus-visible{outline:3px solid #719d17;outline-offset:2px}
+.suggestion-fields fieldset{min-width:0;border:0;margin:0;padding:0}
+.target-reps{display:grid;grid-template-columns:repeat(auto-fit,minmax(48px,1fr));gap:8px}
+.target-reps label{position:relative;margin:0}
+.target-reps label span{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}
+.target-reps input{padding:12px 6px;text-align:center}
+.load-step{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+.load-step>div{display:flex;gap:10px;align-items:center}
+.load-step input{flex:1}
+.load-step .btn{flex-shrink:0;min-height:48px}
+.load-step p{margin-top:9px}
+.suggestion-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
+.suggestion-actions .btn{min-height:48px}
+@media(max-width:500px){.suggestion-dialog{padding:20px 16px}.suggestion-title h2{font-size:24px}.suggestion-card{padding:16px}.suggestion-heading h3{font-size:16px}.suggestion-fields{grid-template-columns:1fr;gap:16px}.target-reps{grid-template-columns:repeat(auto-fit,minmax(48px,1fr))}.suggestion-actions{flex-direction:column-reverse}.suggestion-actions .btn{width:100%}.session-guidance>strong{font-size:17px}.hero-proposal{text-align:center}}

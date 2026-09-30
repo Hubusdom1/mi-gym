@@ -1,6 +1,8 @@
 # Mi Gym
 
-App personal de gimnasio, sin dependencias, con rutinas que se adaptan a los días elegidos y pueden personalizarse. El plan inicial es torso/pierna de cuatro días. Series, pesos, historial y temporizador se guardan en localStorage del navegador. Sin base de datos ni envío de registros a un servidor.
+App de gimnasio con rutinas adaptables, registro de entrenamientos y acceso con cuenta preparado mediante Supabase. Sin cuenta, los datos se guardan en este navegador. Con la conexión activada e inicio de sesión, perfil, rutinas, notas, historial y sesión en curso se guardan en la cuenta y se recuperan en otro dispositivo.
+
+**Estado de esta entrega:** proyecto Supabase `Mi Gym` creado en París (`hsegquwjytlglabjnkjc`) y conexión pública configurada. La migración ya está aplicada: no volver a ejecutarla en este proyecto. Se han probado permisos, guardado con revisiones y aislamiento en la base de datos real, además de las pruebas locales. **Falta configurar las URLs de Auth y el correo antes de probar registro y recuperación completos.** No se han creado cuentas personales ni enviado correos de prueba. La app muestra un aviso mientras `emailSetupPending` sea `true`.
 
 ## Publicar en GitHub Pages
 
@@ -15,7 +17,7 @@ Las rutas de recursos son relativas y admiten una subcarpeta como /mi-gym/. No s
 
 Desde **Días y rutina**, elige tu disponibilidad y revisa las sesiones antes de aplicar. Cambian la distribución, los ejercicios, las series y los días planificados. Puedes mover los días respetando la recuperación.
 
-Primeras dos semanas: elige Adaptación al iniciar sesión, para hacer dos series por ejercicio. Después usa Series del plan si recuperas bien. Los pesos empiezan vacíos; los pesos anteriores son referencias, no registros ya realizados. Marca cada serie completada. Terminar guarda solo las series marcadas.
+Al empezar, puedes elegir Adaptación para hacer hasta dos series por ejercicio, o Series del plan. En esos modos los pesos empiezan vacíos. **Preparar con mi historial** permite revisar y aceptar objetivos de carga antes de comenzar. Las repeticiones realizadas siempre empiezan vacías; las marcas anteriores son referencias. Marca cada serie completada. Terminar guarda solo las series marcadas.
 
 Mancuernas: kg de una mancuerna. Barra: kg totales, incluida la barra. Máquina: carga indicada. No compares distintas máquinas solo por los kg de sus placas.
 
@@ -25,11 +27,11 @@ Referencia: https://acsm.org/resistance-training-guidelines-update-2026/
 
 ## Datos y funcionamiento
 
-Exporta e importa copias JSON desde Rutina. Cada dominio, navegador y dispositivo mantiene sus propios datos. Para cambiar de alojamiento exporta e importa. Cambiar el nombre de un ejercicio crea un identificador distinto para separar sus marcas. Los cambios de rutina afectan a las siguientes sesiones.
+Exporta e importa copias JSON desde Rutina. Sin cuenta, cada dominio, navegador y dispositivo mantiene sus propios datos; para cambiar de alojamiento exporta e importa. Con una cuenta y el mismo proyecto Supabase configurado, inicia sesión y espera a que se descarguen tus datos. Cambiar el nombre de un ejercicio crea un identificador distinto para separar sus marcas. Los cambios de rutina afectan a las siguientes sesiones.
 
-Los recursos de la app se guardan para uso sin conexión mediante service worker después de una primera carga correcta; las barreras de acceso del alojamiento pueden requerir conexión o inicio de sesión. GitHub Pages permite servirla públicamente, aunque cada persona solo ve sus propios registros locales.
+Los recursos de la app se guardan para uso sin conexión mediante service worker después de una primera carga correcta; las barreras de acceso del alojamiento pueden requerir conexión o inicio de sesión. GitHub Pages permite servirla públicamente, con registros locales o acceso con cuenta según la configuración.
 
-El temporizador conserva la hora final y se ajusta al regresar. No hay avisos en segundo plano ni con la pantalla bloqueada. No contiene cuentas de usuario ni sincronización de entrenamientos. Evita usarla simultáneamente en varias pestañas. Borrar los datos del navegador puede eliminar los registros.
+El temporizador conserva la hora final y se ajusta al regresar. No hay avisos en segundo plano ni con la pantalla bloqueada. Evita editar simultáneamente en varias pestañas. Borrar los datos del navegador elimina la copia local y los cambios todavía pendientes; una cuenta puede recuperar lo que ya se haya sincronizado.
 
 Para actualizar los recursos sin conexión, aumenta la versión de CACHE en sw.js y cierra las pestañas antiguas para activar la nueva versión. No cambies la clave mi-gym-v1 salvo que implementes una migración.
 
@@ -51,7 +53,7 @@ Se distribuyen 32 SVG de Workout Guide (Bryl Lim), con originales de Everkinetic
 - **Progreso**: reconoce aumentos del máximo de peso y aumentos de repeticiones a una carga ya registrada. La primera sesión establece la referencia; no se considera una mejora frente a datos inexistentes.
 - **Días y rutina**: de 1 a 6 días de fuerza. Al aplicar se actualizan el plan completo y el objetivo semanal. Se cuentan entrenamientos guardados de lunes a domingo en la zona horaria del dispositivo. Eliminar una sesión recalcula métricas y récords. Las copias antiguas con objetivo de 7 siguen siendo compatibles y se conservan hasta aplicar otro plan.
 
-La clave de almacenamiento sigue siendo `mi-gym-v1`. Las copias antiguas se aceptan sin perder su historial; los nuevos campos se inicializan en memoria y se guardan en la próxima modificación. Las exportaciones incluyen días personalizados, notas, objetivo, vista y sesión en curso. Eliminar o reordenar una rutina no modifica sus sesiones guardadas ni la sesión activa.
+La clave de almacenamiento sin cuenta sigue siendo `mi-gym-v1`. Cada cuenta utiliza una caché separada por proyecto y usuario. Las copias antiguas se aceptan sin perder su historial; los nuevos campos se inicializan en memoria y se guardan en la próxima modificación. Las exportaciones incluyen días personalizados, notas, objetivo, vista y sesión en curso. Eliminar o reordenar una rutina no modifica sus sesiones guardadas ni la sesión activa.
 
 ## Adaptación de la rutina a la frecuencia
 
@@ -68,13 +70,13 @@ Las plantillas de `training-plans.js` especifican sesiones y series reales. No s
 
 Al abrir datos de la versión anterior, el plan original sin personalizar se adapta al objetivo que ya estuviera elegido (1–6). Si estaba personalizado, se mantiene y la app avisa cuando distribución y objetivo no coinciden. Aplicar un plan por días guarda cualquier rutina personalizada en **Planes anteriores** (hasta 20 copias sin duplicados), desde donde puede recuperarse. No se borran pesos, notas, récords ni la sesión activa. Las copias se incluyen al exportar/importar. Las identidades de los ejercicios se mantienen para que sus marcas sigan disponibles al cambiar la distribución.
 
-Validación: `tests/app.test.cjs` comprueba los flujos del registro y `tests/frequency.test.cjs` los cambios reales de frecuencia, su vista previa, la migración y la conservación de datos. Ambos usan Node y `linkedom` como dependencia de pruebas; la app publicada no necesita dependencias.
+Validación: `tests/app.test.cjs` comprueba los flujos del registro y `tests/frequency.test.cjs` los cambios reales de frecuencia, su vista previa, la migración y la conservación de datos. Ambos usan Node y `linkedom` como dependencia de pruebas; la app publicada incluye sus recursos y el cliente Supabase empaquetado; no necesita Node en el teléfono.
 
 ## Primera visita y Perfil
 
 La versión 5 añade un asistente de cuatro pasos: objetivo, datos personales y experiencia, disponibilidad/material y propuesta de rutina. En instalaciones nuevas se abre automáticamente; puede posponerse. Las instalaciones existentes reciben un acceso a **Completar perfil**, sin interrumpir la sesión activa. **Perfil** es la quinta pestaña y permite revisar o cambiar las respuestas.
 
-El nombre, la altura y el peso son opcionales. La edad sirve para limitar estas propuestas generales a adultos (18–100 años). La altura y el peso se guardan como referencia, sin calcular cargas, calorías ni diagnósticos. Todo se almacena en el mismo navegador y se incluye en las copias JSON; no hay cuentas, IA ni transmisión del perfil a un servidor.
+El nombre, la altura y el peso son opcionales. La edad sirve para limitar estas propuestas generales a adultos (18–100 años). La altura y el peso se guardan como referencia, sin calcular cargas, calorías ni diagnósticos. El perfil se incluye en las copias JSON. Sin cuenta permanece en el navegador; al activar la conexión y acceder con cuenta se sincroniza en Supabase. No se envía a una IA.
 
 `profile-engine.js` adapta las plantillas reales de 1–6 días:
 
@@ -93,3 +95,64 @@ Las reglas concretas son decisiones de la app, no una prescripción individual n
 Pruebas de esta versión: `tests/profile.test.cjs` recorre el asistente y verifica efectos reales, cambios de días, exclusiones, guardado parcial, conservación de datos, importación y errores de almacenamiento, además de 1.080 combinaciones de preferencias. Las pruebas del registro y de frecuencia siguen vigentes. Son pruebas de lógica e interacción DOM; no sustituyen la revisión en un iPhone real.
 
 Para actualizar GitHub Pages, extrae `mi-gym-github.zip` y reemplaza los archivos del mismo repositorio y carpeta donde está publicada la app. El ZIP contiene los archivos públicos en la raíz, sin una carpeta `dist` adicional. Mantén la misma URL para conservar el acceso al almacenamiento local de esa instalación. Después cierra y vuelve a abrir la app para activar los recursos sin conexión de esta versión.
+
+## Esfuerzo y próxima sesión
+
+La versión 6 conecta el entrenamiento realizado con objetivos revisables para la siguiente sesión. Funciona en el dispositivo, sin llamadas a IA ni costes por consulta.
+
+- **Anotar el esfuerzo:** después de completar una serie aparece «¿Cuántas repeticiones te quedaban?». Puedes elegir ninguna, una, dos o tres o más, manteniendo la misma técnica. Es opcional y puedes dejar «No lo sé / Sin indicar». El selector corresponde a la última serie completada por posición; las anotaciones de las anteriores se conservan. Editar o desmarcar una serie elimina su esfuerzo anterior para evitar reutilizar una estimación que ya no corresponde.
+- **Copiar última serie:** copia peso y repeticiones a la primera serie pendiente cuando sus repeticiones están vacías y su carga está vacía o coincide. No pisa datos distintos, no marca la serie como hecha ni inicia otro descanso.
+- **Preparar próxima sesión con mi historial:** disponible en Entrenar y en las opciones de inicio. Muestra una explicación y la referencia utilizada por ejercicio. Puedes editar la carga, las repeticiones de cada serie o desmarcar los objetivos que no quieras usar. Cancelar no cambia los registros. Aceptar abre una sesión nueva con las cargas aceptadas y las repeticiones realizadas en blanco; nunca registra trabajo automáticamente.
+- **Historial:** conserva el margen anotado y los objetivos aceptados junto con las series reales. Las copias JSON incluyen estos datos y los saltos de peso que hayas indicado.
+
+`progression-engine.js` utiliza reglas explícitas de la app. Para una referencia comparable exige el mismo ejercicio, series, rango y carga uniforme, con la última sesión dentro de 21 días. Si faltan datos, hay cargas mezcladas, una sustitución, una sesión parcial o una variante personalizada, pide revisar la referencia y no rellena una carga. Tampoco utiliza un registro antiguo favorable para saltarse uno más reciente incompleto. Compara siempre la misma máquina, configuración y técnica; esos cambios no pueden deducirse de los kilos.
+
+Con una referencia comparable, si falta el esfuerzo de la última serie o alguna serie tiene menos de dos repeticiones en reserva, mantiene la referencia. Si hay margen y aún quedan repeticiones dentro del rango, propone una repetición adicional en una sola serie. Para proponer más peso requiere dos sesiones consecutivas comparables en días distintos, ambas al máximo del rango y con margen; la anterior debe estar dentro de 42 días. Después pide el menor salto disponible. Solo propone aumentos de hasta el 10 % y vuelve al inicio del rango. Con cero carga externa pide revisar la progresión de dificultad. El salto se expresa por mancuerna o como aumento total en una barra, siguiendo la unidad usada al registrar el ejercicio.
+
+Los plazos, el número de sesiones y el límite del 10 % son decisiones conservadoras del producto; no son una prescripción clínica ni una recomendación individual validada. El usuario revisa siempre la propuesta. La app no decide cargas a partir del peso corporal, altura o edad.
+
+La clave de datos sigue siendo `mi-gym-v1`: las instalaciones y copias anteriores no necesitan esfuerzo anotado para abrirse. El guardado conserva la sesión en curso y revierte el cambio si falla el almacenamiento. La caché de recursos actual es `mi-gym-shell-v8-supabase`.
+
+Pruebas: `tests/progression.test.cjs` verifica las decisiones a partir del historial, límites y casos incompletos, revisión/cancelación/edición, saltos de carga, copia de series, esfuerzo y su invalidación, importación, errores de almacenamiento y conservación de sesiones y sustituciones. También se ejecutan las pruebas existentes de registro, frecuencia y perfil. Se comprueban lógica e interacción DOM; queda pendiente una revisión visual en un iPhone real.
+
+
+## Cuentas y sincronización (versión 7)
+
+En **Cuenta** o **Perfil > Iniciar sesión**, la integración ofrece registro, acceso, recuperación de contraseña y cierre de sesión. El registro requiere confirmar el correo. En una cuenta nueva puedes pasar explícitamente los datos de este dispositivo o empezar de cero: nunca se suben automáticamente datos de invitado a otra cuenta.
+
+El guardado conserva primero una copia local y después sincroniza. Antes de cambiar de teléfono, comprueba **Guardado en la nube**. La primera descarga requiere conexión. Si dos dispositivos modifican una misma versión, se pide elegir cuál conservar; no se fusionan automáticamente. Se conserva una copia de recuperación local y se pueden descargar ambas versiones. Esos archivos contienen objetos `local` y `cloud`; para importar uno se debe extraer el objeto elegido a un JSON normal de Mi Gym.
+
+Cerrar sesión con cambios pendientes los conserva en la caché de esa cuenta, hasta volver a entrar con ella en el mismo navegador. Cerrar sesión con datos sincronizados retira su caché principal. Las copias de recuperación y los archivos exportados no se eliminan automáticamente; tenlo en cuenta en dispositivos compartidos. Borrar los entrenamientos dentro de una cuenta también sincroniza el borrado: no elimina la cuenta de acceso.
+
+La base de datos guarda un documento privado por usuario, limitado a 4 MiB, con revisión para detectar conflictos. RLS limita las lecturas a su propietario; las escrituras pasan por una función que obtiene el usuario de la sesión y comprueba la revisión. No se aceptan contraseñas ni claves administrativas en el frontend. Esta primera versión no incluye competiciones, suscripciones ni eliminación de la cuenta desde la interfaz.
+
+### Activar el proyecto (administrador)
+
+1. Crear o elegir un proyecto Supabase en la organización del propietario, revisando antes el coste.
+2. Aplicar una vez `supabase/migrations/20260929170214_gym_accounts.sql` mediante las migraciones de Supabase. En el ZIP está en `setup/`.
+3. Rellenar `cloud-config.js` con la URL HTTPS del proyecto y su clave **publicable** `sb_publishable_…`. Nunca usar `service_role`, una clave secreta ni la contraseña de la base de datos.
+4. En Authentication, configurar Site URL y las Redirect URLs exactas de los alojamientos usados, incluida la subcarpeta de GitHub Pages cuando corresponda. Mantener la confirmación de correo activada.
+5. Configurar un proveedor SMTP antes de probar altas de amigos y familiares: el servicio de correo de prueba de Supabase restringe destinatarios y envíos. No basta con publicar el botón de registro. No compartir contraseñas ni credenciales SMTP por chat.
+6. Actualizar la versión de caché de `sw.js`, publicar los recursos y verificar registro/confirmación/recuperación y sincronización en dos dispositivos reales. Revisar los asesores de seguridad del proyecto.
+
+En el proyecto actual ya están completados los pasos 1–3. Falta finalizar los pasos 4–6; tras verificarlos, cambiar `emailSetupPending` a `false` y actualizar la caché. Si se vacían URL y clave, la app vuelve a mostrar que la conexión está pendiente de activar. Esta configuración puede compartirse en un repositorio público porque solo contiene una clave publicable; las reglas de la base de datos son las que protegen los registros.
+
+### Desarrollo y pruebas
+
+`npm ci`, `npm run build:vendor` y `npm test`. La app es estática y los archivos de `dist` se pueden publicar directamente. Las versiones están fijadas en `package-lock.json`. El paquete Supabase y sus avisos de licencia se distribuyen en `vendor/`.
+
+Además de las pruebas existentes, `tests/cloud.test.cjs` ejecuta la migración en PostgreSQL mediante PGlite y comprueba permisos, aislamiento de cuentas, revisión de escrituras, dos dispositivos, trabajo sin conexión, conflictos, respuestas perdidas, cambios durante una subida y errores de almacenamiento. Las pruebas DOM comprueban acceso, cambio a invitado y el estado sin configurar. No sustituyen una prueba de Auth y correo con el proyecto real ni una revisión visual en iPhone.
+
+
+### Siguiente ajuste para esta instalación
+
+En [Authentication > URL Configuration](https://supabase.com/dashboard/project/hsegquwjytlglabjnkjc/auth/url-configuration), establecer:
+
+- **Site URL:** `https://mi-gym-hugo.hubusdom.chatgpt.site/`
+- **Redirect URLs:** añadir `https://mi-gym-hugo.hubusdom.chatgpt.site/` y `https://mi-gym-hugo.hubusdom.chatgpt.site/index.html`.
+
+Guardar los cambios. Para una versión en GitHub Pages, añadir también su dirección real con la subcarpeta correcta; no usar como sustituto la URL de otra app. La publicación de Sites conserva su acceso privado y todavía no es un enlace abierto para amigos.
+
+El envío de correos por defecto permite probar con el correo del propietario de Supabase; amigos y familiares necesitan un proveedor SMTP configurado. Después de configurar las URLs, el propietario puede crear su cuenta desde la app, confirmar el correo y elegir si migra sus datos locales. La contraseña se introduce exclusivamente en la app. Verificar **Guardado en la nube** y después iniciar sesión en un segundo dispositivo con la misma cuenta.
+
+El 29-09-2026, Supabase indicó coste de creación de este proyecto de 0 al mes. No se ha contratado un plan de pago ni un proveedor de correo. Este dato no garantiza costes futuros si se cambian el plan o los servicios.
